@@ -105,6 +105,16 @@
       "role": "USER",
       "status": "ACTIVE",
       "createdAt": "2025-11-26T19:55:47.534Z"
+    },
+    {
+      "id": "28b4",
+      "login": "9",
+      "email": "9",
+      "password": "9",
+      "balance": 0,
+      "role": "USER",
+      "status": "ACTIVE",
+      "createdAt": "2025-11-26T20:55:43.531Z"
     }
   ],
   "bets": [],

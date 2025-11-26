@@ -1,4 +1,12 @@
-import { AppBar, Box, Button, Modal, Typography } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  Button,
+  Modal,
+  Popover,
+  Stack,
+  Typography,
+} from "@mui/material";
 import Logo from "./Logo";
 import NavBar from "./NavBar";
 import type { LinkProps } from "./Link";
@@ -31,7 +39,7 @@ const navBarLinks: LinkProps[] = [
 export default function Header() {
   const dispatch = useAppDispatch();
 
-  const user = useAppSelector((state) => state.user);
+  const user = useAppSelector((state) => state.user.user);
 
   useEffect(() => {
     console.log(user);
@@ -125,6 +133,30 @@ export default function Header() {
     setRegisterErrorMessage("");
   };
 
+  // Информация о пользователе
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>();
+  const userInfoOpen = Boolean(anchorEl);
+
+  const handleUserInfoClick = (event: MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleUserInfoClose = () => {
+    setAnchorEl(null);
+  };
+
+  const userRoleMap = {
+    USER: "Пользователь",
+    ADMIN: "Администратор",
+    SUPPORT: "Служба поддержки",
+    NONE: "",
+  };
+
+  const userStatusMap = {
+    ACTIVE: "Активный",
+    BLOCKED: "Заблокирован",
+  };
+
   return (
     <>
       <AppBar
@@ -191,7 +223,42 @@ export default function Header() {
           <WithRole allowedRoles="USER">
             <RowStack>
               <Box>
-                <Typography>Баланс: 0</Typography>
+                <Typography>Баланс: 0 </Typography>
+              </Box>
+              <Box>
+                <Button variant="text" onClick={handleUserInfoClick}>
+                  {user?.login}
+                </Button>
+                {user && (
+                  <Popover
+                    open={userInfoOpen}
+                    onClose={handleUserInfoClose}
+                    anchorEl={anchorEl}
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "right",
+                    }}
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                  >
+                    <Box sx={{ p: 2 }}>
+                      <Stack>
+                        <Typography>Баланс: {user.balance}</Typography>
+                        <Typography>{user.email}</Typography>
+                        <Typography>{userRoleMap[user.role]}</Typography>
+                        <Typography>{userStatusMap[user.status]}</Typography>
+                        <Typography>
+                          Создан{" "}
+                          {user.createdAt instanceof Date
+                            ? user.createdAt.toLocaleString("ru-RU")
+                            : new Date(user.createdAt).toLocaleString("ru-RU")}
+                        </Typography>
+                      </Stack>
+                    </Box>
+                  </Popover>
+                )}
               </Box>
               <Button onClick={logout}>Выход</Button>
             </RowStack>
