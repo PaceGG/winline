@@ -2,7 +2,7 @@ export interface Match {
   id: string;
   teamA: string;
   teamB: string;
-  sportType: "FOOTBALL";
+  sportType: string;
   league: string;
   startTime: string;
   status: "UPCOMING" | "LIVE" | "FINISHED" | "CANCELLED";
