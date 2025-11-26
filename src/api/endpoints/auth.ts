@@ -28,7 +28,15 @@ export const authAPI = {
     );
 
     if (response.data.length === 0) {
-      throw new Error("Invalid credentials");
+      throw {
+        response: {
+          status: 401,
+          data: {
+            message: "Invalid credentials",
+            code: "AUTH_FAILED",
+          },
+        },
+      };
     }
 
     const userData = response.data[0];

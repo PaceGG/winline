@@ -49,8 +49,10 @@ export default function Header() {
   // Форма входа
   const [loginModalOpen, setLoginModalOpen] = useState(false);
 
+  const [loginErrorMessage, setLoginErrorMessage] = useState<string>();
+
   const onLoginModalClose = () => {
-    setLoginModalOpen(false);
+    cancelLogin();
   };
 
   const loginFields: FormField[] = [
@@ -63,13 +65,22 @@ export default function Header() {
       email: data.email,
       password: data.password,
     };
-    const user = await authAPI.login(loginRequest);
-    console.log(user);
-    setLoginModalOpen(false);
+    try {
+      const userData = await authAPI.login(loginRequest);
+      console.log("Успешный вход:", userData);
+      setLoginModalOpen(false);
+    } catch (error: any) {
+      if (error.response?.status === 401) {
+        setLoginErrorMessage("Неверная почта или пароль");
+      } else {
+        setLoginErrorMessage("Произошла ошибка при входе");
+      }
+    }
   };
 
   const cancelLogin = () => {
     setLoginModalOpen(false);
+    setLoginErrorMessage("");
   };
 
   // Форма регистрации
@@ -146,6 +157,7 @@ export default function Header() {
                   onCancel={cancelLogin}
                   submitText="Войти"
                   cancelText="Отмена"
+                  errorMessage={loginErrorMessage}
                 />
               </Modal>
               {/* Регистрация */}
