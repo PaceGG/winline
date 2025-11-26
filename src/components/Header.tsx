@@ -187,7 +187,28 @@ export default function Header() {
   };
 
   const cancelBalance = () => {
-    console.log("баланс отмена");
+    onBalanceModalClose();
+  };
+
+  // Логин
+  const userLoginFields: FormField[] = [
+    { name: "login", label: "Имя", type: "text", required: true },
+  ];
+  const [userLoginModalOpen, setUserLoginModalOpen] = useState(false);
+
+  const onUserLoginModalClose = () => {
+    setUserLoginModalOpen(false);
+  };
+
+  const handleUserLogin = async (data: Record<string, any>) => {
+    if (!user) return;
+    const response = await userAPI.updateLogin(user.id, data.login);
+    dispatch(setUser(response.data));
+    onUserLoginModalClose();
+  };
+
+  const cancelUserLogin = () => {
+    onUserLoginModalClose();
   };
 
   // Роли
@@ -343,6 +364,27 @@ export default function Header() {
                             onSubmit={handleBalance}
                             onCancel={cancelBalance}
                             submitText="Пополнить"
+                            absolute
+                          />
+                        </Modal>
+
+                        {/* Логин */}
+                        <Button
+                          {...buttonConfigs.userInfo}
+                          onClick={() => setUserLoginModalOpen(true)}
+                        >
+                          {user.login}
+                        </Button>
+                        <Modal
+                          open={userLoginModalOpen}
+                          onClose={onUserLoginModalClose}
+                        >
+                          <FormComponent
+                            title="Изменение логина"
+                            fields={userLoginFields}
+                            onSubmit={handleUserLogin}
+                            onCancel={cancelUserLogin}
+                            submitText="Изменить"
                             absolute
                           />
                         </Modal>
