@@ -18,6 +18,7 @@ export default function Link({ href = "/", label }: LinkProps) {
           color: "primary.main",
         },
         transition: "0.1s",
+        whiteSpace: "nowrap",
       }}
     >
       {label}

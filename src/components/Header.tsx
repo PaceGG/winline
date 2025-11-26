@@ -45,38 +45,47 @@ export default function Header() {
   return (
     <AppBar
       sx={{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
         bgcolor: "#edf0f5",
         color: "black",
-        px: 30,
         py: 1,
       }}
     >
-      <RowStack gap={6}>
-        <Logo />
-        <NavBar links={navBarLinks} />
-      </RowStack>
-
-      <WithRole allowedRoles="none">
-        <RowStack>
-          <Button color="secondary" onClick={login}>
-            Вход
-          </Button>
-          {/* <Button>Регистрация</Button> */}
+      <Box
+        sx={{
+          maxWidth: 1280,
+          width: "100%",
+          px: 1,
+          boxSizing: "border-box",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          margin: "auto",
+        }}
+      >
+        <RowStack gap={6}>
+          <Logo />
+          <NavBar links={navBarLinks} />
         </RowStack>
-      </WithRole>
 
-      <WithRole allowedRoles="user">
-        <RowStack>
-          <Box>
-            <Typography>Баланс: 0</Typography>
-          </Box>
-          <Button onClick={logout}>Выход</Button>
-        </RowStack>
-      </WithRole>
+        <WithRole allowedRoles="none">
+          <RowStack>
+            <Button color="secondary" onClick={login}>
+              Вход
+            </Button>
+            {/* <Button>Регистрация</Button> */}
+          </RowStack>
+        </WithRole>
+
+        <WithRole allowedRoles="user">
+          <RowStack>
+            <Box>
+              <Typography>Баланс: 0</Typography>
+            </Box>
+            <Button onClick={logout}>Выход</Button>
+          </RowStack>
+        </WithRole>
+      </Box>
     </AppBar>
   );
 }
