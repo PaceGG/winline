@@ -51,7 +51,7 @@
       "login": "asd",
       "email": "asd",
       "password": "asd",
-      "balance": 0,
+      "balance": 42,
       "role": "USER",
       "status": "ACTIVE",
       "createdAt": "2025-11-26T19:13:18.553Z"

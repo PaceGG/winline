@@ -21,6 +21,7 @@ import { WithRole } from "./WithRole";
 import FormComponent, { type FormField } from "./FormComponent";
 import { authAPI } from "../api/endpoints/auth";
 import { setUser } from "../store/userSlice";
+import { userAPI } from "../api/endpoints/user";
 
 const navBarLinks: LinkProps[] = [
   {
@@ -150,6 +151,7 @@ export default function Header() {
     setUserInfoAnchorEl(null);
   };
 
+  // ID
   const [copyUserIdInfoAnchorEl, setCopyUserIdInfoAnchorEl] =
     useState<HTMLElement | null>();
   const copyUserIdInfoOpen = Boolean(copyUserIdInfoAnchorEl);
@@ -162,6 +164,33 @@ export default function Header() {
     }, 1500);
   };
 
+  // Баланс
+  const balanceFields: FormField[] = [
+    {
+      name: "amount",
+      label: "Сумма пополнения",
+      type: "number",
+      required: true,
+    },
+  ];
+  const [balanceModalOpen, setBalanceModalOpen] = useState(false);
+
+  const onBalanceModalClose = () => {
+    setBalanceModalOpen(false);
+  };
+
+  const handleBalance = async (data: Record<string, any>) => {
+    if (!user) return;
+    const response = await userAPI.updateBalance(user.id, Number(data.amount));
+    dispatch(setUser(response.data));
+    onBalanceModalClose();
+  };
+
+  const cancelBalance = () => {
+    console.log("баланс отмена");
+  };
+
+  // Роли
   const userRoleMap = {
     USER: "Пользователь",
     ADMIN: "Администратор",
@@ -169,6 +198,7 @@ export default function Header() {
     NONE: "",
   };
 
+  // Статус
   const userStatusMap = {
     ACTIVE: "Активный",
     BLOCKED: "Заблокирован",
@@ -252,7 +282,7 @@ export default function Header() {
           <WithRole allowedRoles="USER">
             <RowStack>
               <Box>
-                <Typography>Баланс: 0 </Typography>
+                <Typography>Баланс: {user?.balance ?? 0} </Typography>
               </Box>
               <Box>
                 <Button variant="text" onClick={handleUserInfoClick}>
@@ -274,6 +304,7 @@ export default function Header() {
                   >
                     <Box sx={{ p: 2 }}>
                       <Stack gap={1}>
+                        {/* ID */}
                         <Button
                           onClick={copyUserId}
                           {...buttonConfigs.userInfo}
@@ -294,9 +325,28 @@ export default function Header() {
                             </Fade>
                           )}
                         </Popper>
-                        <Button {...buttonConfigs.userInfo}>
+
+                        {/* БАЛАНС */}
+                        <Button
+                          {...buttonConfigs.userInfo}
+                          onClick={() => setBalanceModalOpen(true)}
+                        >
                           Баланс: {user.balance}
                         </Button>
+                        <Modal
+                          open={balanceModalOpen}
+                          onClose={onBalanceModalClose}
+                        >
+                          <FormComponent
+                            title="Пополнение баланса"
+                            fields={balanceFields}
+                            onSubmit={handleBalance}
+                            onCancel={cancelBalance}
+                            submitText="Пополнить"
+                            absolute
+                          />
+                        </Modal>
+
                         <Button {...buttonConfigs.userInfo}>
                           {user.email}
                         </Button>
