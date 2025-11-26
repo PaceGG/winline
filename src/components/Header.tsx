@@ -6,6 +6,7 @@ import RowStack from "./RowStack";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
 import { setUser } from "../store/userAuthSlice";
 import { useEffect } from "react";
+import { WithRole } from "./WithRole";
 
 const navBarLinks: LinkProps[] = [
   {
@@ -53,12 +54,14 @@ export default function Header() {
         <Logo />
         <NavBar links={navBarLinks} />
       </RowStack>
-      <RowStack>
-        <Button color="secondary" onClick={login}>
-          Вход
-        </Button>
-        <Button>Регистрация</Button>
-      </RowStack>
+      <WithRole allowedRoles="none">
+        <RowStack>
+          <Button color="secondary" onClick={login}>
+            Вход
+          </Button>
+          <Button>Регистрация</Button>
+        </RowStack>
+      </WithRole>
     </AppBar>
   );
 }

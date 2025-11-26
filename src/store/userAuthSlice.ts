@@ -1,22 +1,21 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
+export type UserRole = "user" | "none";
+
 interface AuthState {
-  role: "user" | null;
+  role: UserRole;
 }
 
 const initialState: AuthState = {
-  role: null,
+  role: "none",
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<string | null>) => {
-      const newRole = action.payload;
-
-      if (newRole === "user") state.role = newRole;
-      else state.role = null;
+    setUser: (state, action: PayloadAction<UserRole>) => {
+      state.role = action.payload;
     },
   },
 });
