@@ -4,11 +4,11 @@ import { AuthorizationProvider } from "./components/WithRole";
 import { useAppSelector } from "./hooks/redux";
 
 function App() {
-  const userRole = useAppSelector((state) => state.auth);
+  const userRole = useAppSelector((state) => state.user.user?.role);
 
   return (
     <>
-      <AuthorizationProvider getUserRoles={() => [userRole.role]}>
+      <AuthorizationProvider getUserRoles={() => [userRole ?? "NONE"]}>
         <Header />
         <MatchList />
       </AuthorizationProvider>

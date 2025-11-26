@@ -4,13 +4,11 @@ import NavBar from "./NavBar";
 import type { LinkProps } from "./Link";
 import RowStack from "./RowStack";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
-import { setUser } from "../store/userAuthSlice";
 import { useEffect, useState } from "react";
 import { WithRole } from "./WithRole";
 import FormComponent, { type FormField } from "./FormComponent";
 import { authAPI } from "../api/endpoints/auth";
-import type { User } from "../types";
-import type { UserData } from "../api/types/user";
+import { setUser } from "../store/userSlice";
 
 const navBarLinks: LinkProps[] = [
   {
@@ -31,19 +29,16 @@ const navBarLinks: LinkProps[] = [
 ];
 
 export default function Header() {
-  const role = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    console.log(role);
-  }, [role]);
+  const user = useAppSelector((state) => state.user);
 
-  const login = () => {
-    dispatch(setUser("user"));
-  };
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
 
   const logout = () => {
-    dispatch(setUser("none"));
+    dispatch(setUser(null));
   };
 
   // Форма входа
@@ -69,6 +64,7 @@ export default function Header() {
       const userData = await authAPI.login(loginRequest);
       console.log("Успешный вход:", userData);
       setLoginModalOpen(false);
+      dispatch(setUser(userData));
     } catch (error: any) {
       if (error.response?.status === 401) {
         setLoginErrorMessage("Неверная почта или пароль");
@@ -154,7 +150,7 @@ export default function Header() {
             <NavBar links={navBarLinks} />
           </RowStack>
 
-          <WithRole allowedRoles="none">
+          <WithRole allowedRoles="NONE">
             <RowStack>
               <Button color="secondary" onClick={() => setLoginModalOpen(true)}>
                 Вход
@@ -190,7 +186,7 @@ export default function Header() {
             </RowStack>
           </WithRole>
 
-          <WithRole allowedRoles="user">
+          <WithRole allowedRoles="USER">
             <RowStack>
               <Box>
                 <Typography>Баланс: 0</Typography>
