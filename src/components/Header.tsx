@@ -3,6 +3,9 @@ import Logo from "./Logo";
 import NavBar from "./NavBar";
 import type { LinkProps } from "./Link";
 import RowStack from "./RowStack";
+import { useAppDispatch, useAppSelector } from "../hooks/redux";
+import { setUser } from "../store/userAuthSlice";
+import { useEffect } from "react";
 
 const navBarLinks: LinkProps[] = [
   {
@@ -23,6 +26,17 @@ const navBarLinks: LinkProps[] = [
 ];
 
 export default function Header() {
+  const role = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    console.log(role);
+  }, [role]);
+
+  const login = () => {
+    dispatch(setUser("user"));
+  };
+
   return (
     <AppBar
       sx={{
@@ -40,7 +54,9 @@ export default function Header() {
         <NavBar links={navBarLinks} />
       </RowStack>
       <RowStack>
-        <Button color="secondary">Вход</Button>
+        <Button color="secondary" onClick={login}>
+          Вход
+        </Button>
         <Button>Регистрация</Button>
       </RowStack>
     </AppBar>
