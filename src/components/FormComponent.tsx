@@ -153,6 +153,7 @@ const FormComponent: React.FC<FormProps> = ({
       case "number":
         return (
           <TextField
+            id={field.name}
             {...commonProps}
             type={field.type}
             value={formData[field.name] || ""}
