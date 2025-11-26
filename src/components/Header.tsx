@@ -1,4 +1,4 @@
-import { AppBar, Button } from "@mui/material";
+import { AppBar, Box, Button } from "@mui/material";
 import Logo from "./Logo";
 import NavBar from "./NavBar";
 import type { LinkProps } from "./Link";
@@ -38,6 +38,10 @@ export default function Header() {
     dispatch(setUser("user"));
   };
 
+  const logout = () => {
+    dispatch(setUser("none"));
+  };
+
   return (
     <AppBar
       sx={{
@@ -54,12 +58,20 @@ export default function Header() {
         <Logo />
         <NavBar links={navBarLinks} />
       </RowStack>
+
       <WithRole allowedRoles="none">
         <RowStack>
           <Button color="secondary" onClick={login}>
             Вход
           </Button>
-          <Button>Регистрация</Button>
+          {/* <Button>Регистрация</Button> */}
+        </RowStack>
+      </WithRole>
+
+      <WithRole allowedRoles="user">
+        <RowStack>
+          <Box>Баланс: 0</Box>
+          <Button onClick={logout}>Выход</Button>
         </RowStack>
       </WithRole>
     </AppBar>
