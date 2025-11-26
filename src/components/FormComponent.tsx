@@ -40,6 +40,7 @@ interface FormProps {
   submitText?: string;
   cancelText?: string;
   loading?: boolean;
+  absolute?: boolean;
 }
 
 const FormComponent: React.FC<FormProps> = ({
@@ -50,6 +51,7 @@ const FormComponent: React.FC<FormProps> = ({
   submitText = "Сохранить",
   cancelText = "Отмена",
   loading = false,
+  absolute = false,
 }) => {
   const [formData, setFormData] = React.useState<Record<string, any>>({});
   const [errors, setErrors] = React.useState<Record<string, string>>({});
@@ -203,7 +205,18 @@ const FormComponent: React.FC<FormProps> = ({
   };
 
   return (
-    <Paper elevation={3} sx={{ p: 3 }}>
+    <Paper
+      elevation={3}
+      sx={{
+        ...(absolute && {
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }),
+        p: 3,
+      }}
+    >
       {title && (
         <Typography variant="h5" component="h2" gutterBottom>
           {title}

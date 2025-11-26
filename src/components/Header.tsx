@@ -114,23 +114,15 @@ export default function Header() {
                 Регистрация
               </Button>
               <Modal open={registerModalOpen} onClose={onRegisterModalClose}>
-                <Box
-                  sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                  }}
-                >
-                  <FormComponent
-                    title="Регистрация"
-                    fields={registerFields}
-                    onSubmit={handleRegister}
-                    onCancel={cancelRegister}
-                    submitText="Зарегестрироваться"
-                    cancelText="Отмена"
-                  />
-                </Box>
+                <FormComponent
+                  absolute
+                  title="Регистрация"
+                  fields={registerFields}
+                  onSubmit={handleRegister}
+                  onCancel={cancelRegister}
+                  submitText="Зарегестрироваться"
+                  cancelText="Отмена"
+                />
               </Modal>
             </RowStack>
           </WithRole>
