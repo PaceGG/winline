@@ -27,4 +27,11 @@ export const theme = createTheme({
       main: "#4caf50",
     },
   },
+  components: {
+    MuiButton: {
+      defaultProps: {
+        variant: "contained",
+      },
+    },
+  },
 });

@@ -1,4 +1,4 @@
-import { AppBar } from "@mui/material";
+import { AppBar, Button } from "@mui/material";
 import Logo from "./Logo";
 import NavBar from "./NavBar";
 import type { LinkProps } from "./Link";
@@ -35,9 +35,13 @@ export default function Header() {
         py: 1,
       }}
     >
-      <RowStack>
+      <RowStack gap={6}>
         <Logo />
         <NavBar links={navBarLinks} />
+      </RowStack>
+      <RowStack>
+        <Button color="secondary">Вход</Button>
+        <Button>Регистрация</Button>
       </RowStack>
     </AppBar>
   );
