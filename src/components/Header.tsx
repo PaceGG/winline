@@ -1,7 +1,8 @@
-import { AppBar, Box, Stack } from "@mui/material";
+import { AppBar } from "@mui/material";
 import Logo from "./Logo";
 import NavBar from "./NavBar";
 import type { LinkProps } from "./Link";
+import RowStack from "./RowStack";
 
 const navBarLinks: LinkProps[] = [
   {
@@ -34,10 +35,10 @@ export default function Header() {
         py: 1,
       }}
     >
-      <Stack direction={"row"} alignItems={"center"} gap={5}>
+      <RowStack>
         <Logo />
         <NavBar links={navBarLinks} />
-      </Stack>
+      </RowStack>
     </AppBar>
   );
 }

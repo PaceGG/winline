@@ -1,5 +1,4 @@
 import { Link as MuiLink } from "@mui/material";
-import { theme } from "../theme";
 
 export interface LinkProps {
   href?: string;
