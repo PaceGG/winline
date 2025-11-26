@@ -1,0 +1,32 @@
+{
+  "matches": [
+    {
+      "id": "1",
+      "teamA": "Челси",
+      "teamB": "Манчестер Сити",
+      "sportType": "FOOTBALL",
+      "league": "Английская Премьер-Лига",
+      "startTime": "2025-10-05T17:00:00Z",
+      "status": "UPCOMING",
+      "scoreA": null,
+      "scoreB": null,
+      "odds": {
+        "winA": 3.2,
+        "draw": 3.4,
+        "winB": 2.1
+      }
+    }
+  ],
+  "users": [
+    {
+      "id": "1",
+      "email": "user@test.com",
+      "username": "test_user",
+      "balance": 1000,
+      "role": "USER",
+      "isBlocked": false
+    }
+  ],
+  "bets": [],
+  "transactions": []
+}

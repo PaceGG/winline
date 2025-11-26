@@ -4,16 +4,21 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "dev": "concurrently \"npm run mock:server\" \"vite\"",
+    "mock:server": "json-server --watch src/api/mockServer/db.json --port 3001",
+    "build": "vite build",
+    "preview": "vite preview",
+    "dev:frontend": "vite",
+    "dev:backend": "npm run mock:server"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^7.3.5",
     "@mui/material": "^7.3.5",
     "@reduxjs/toolkit": "^2.11.0",
+    "axios": "^1.13.2",
+    "json-server": "^1.0.0-beta.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-redux": "^9.2.0"

@@ -1,0 +1,5 @@
+{
+  "/api/*": "/$1",
+  "/auth/login": "/users?email=:email&password=:password",
+  "/profile/bets": "/bets?userId=:userId"
+}
