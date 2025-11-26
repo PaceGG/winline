@@ -1,4 +1,5 @@
 import Header from "./components/Header";
+import MatchList from "./components/MatchList";
 import { AuthorizationProvider } from "./components/WithRole";
 import { useAppSelector } from "./hooks/redux";
 
@@ -9,6 +10,7 @@ function App() {
     <>
       <AuthorizationProvider getUserRoles={() => [userRole.role]}>
         <Header />
+        <MatchList />
       </AuthorizationProvider>
     </>
   );
