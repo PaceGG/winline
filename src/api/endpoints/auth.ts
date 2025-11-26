@@ -43,7 +43,9 @@ export const authAPI = {
       createdAt: new Date(),
     };
 
-    return httpClient.post("users", userData);
+    const response = await httpClient.post("users", userData);
+    const { password, ...userWithoutPassword } = response.data;
+    return userWithoutPassword;
   },
 
   login: async (data: UserLoginRequest): Promise<UserData> => {

@@ -107,7 +107,9 @@ export default function Header() {
       password: data.password,
     };
     try {
-      await authAPI.register(registerRequest);
+      const userData = await authAPI.register(registerRequest);
+      console.log("Зарегестрирован новый пользователь: ", userData);
+      dispatch(setUser(userData));
       setRegisterModalOpen(false);
     } catch (error: any) {
       if (error.response?.status == 409) {

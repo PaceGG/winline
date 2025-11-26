@@ -65,6 +65,46 @@
       "role": "USER",
       "status": "ACTIVE",
       "createdAt": "2025-11-26T19:21:22.339Z"
+    },
+    {
+      "id": "507c",
+      "login": "Юрий",
+      "email": "yura3012004@gmail.com",
+      "password": "123",
+      "balance": 0,
+      "role": "USER",
+      "status": "ACTIVE",
+      "createdAt": "2025-11-26T19:48:57.820Z"
+    },
+    {
+      "id": "e9ff",
+      "login": "1",
+      "email": "1",
+      "password": "1",
+      "balance": 0,
+      "role": "USER",
+      "status": "ACTIVE",
+      "createdAt": "2025-11-26T19:53:02.927Z"
+    },
+    {
+      "id": "4bb6",
+      "login": "2",
+      "email": "2",
+      "password": "2",
+      "balance": 0,
+      "role": "USER",
+      "status": "ACTIVE",
+      "createdAt": "2025-11-26T19:55:14.411Z"
+    },
+    {
+      "id": "c752",
+      "login": "4",
+      "email": "4",
+      "password": "4",
+      "balance": 0,
+      "role": "USER",
+      "status": "ACTIVE",
+      "createdAt": "2025-11-26T19:55:47.534Z"
     }
   ],
   "bets": [],
