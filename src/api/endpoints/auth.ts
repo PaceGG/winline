@@ -6,10 +6,25 @@ import type {
   UserRegisterRequest,
 } from "../types/user";
 
+const checkEmailExists = async (email: string): Promise<boolean> => {
+  try {
+    const response = await httpClient.get(`users?email=${email}`);
+    return response.data && response.data.length > 0;
+  } catch (error) {
+    console.error("Error checking email:", error);
+    return false;
+  }
+};
+
 export const authAPI = {
   register: async (
     userRegisterRequest: UserRegisterRequest
   ): Promise<UserData> => {
+    const emailExists = await checkEmailExists(userRegisterRequest.email);
+    if (emailExists) {
+      throw new Error("Пользователь с таким email уже существует");
+    }
+
     const userData: Omit<User, "id"> = {
       login: userRegisterRequest.login,
       email: userRegisterRequest.email,
@@ -19,6 +34,7 @@ export const authAPI = {
       status: "ACTIVE",
       createdAt: new Date(),
     };
+
     return httpClient.post("users", userData);
   },
 

@@ -45,6 +45,16 @@
       "role": "USER",
       "status": "ACTIVE",
       "createdAt": "2025-11-26T18:06:22.776Z"
+    },
+    {
+      "id": "69cd",
+      "login": "asd",
+      "email": "asd",
+      "password": "asd",
+      "balance": 0,
+      "role": "USER",
+      "status": "ACTIVE",
+      "createdAt": "2025-11-26T19:13:18.553Z"
     }
   ],
   "bets": [],

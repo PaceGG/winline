@@ -86,6 +86,8 @@ export default function Header() {
   // Форма регистрации
   const [registerModalOpen, setRegisterModalOpen] = useState(false);
 
+  const [registerErrorMessage, setRegisterErrorMessage] = useState<string>();
+
   const onRegisterModalClose = () => {
     setRegisterModalOpen(false);
   };
@@ -108,12 +110,17 @@ export default function Header() {
       email: data.email,
       password: data.password,
     };
-    await authAPI.register(registerRequest);
-    setRegisterModalOpen(false);
+    try {
+      await authAPI.register(registerRequest);
+      setRegisterModalOpen(false);
+    } catch (error: any) {
+      setRegisterErrorMessage(error.message);
+    }
   };
 
   const cancelRegister = () => {
     setRegisterModalOpen(false);
+    setRegisterErrorMessage("");
   };
 
   return (
@@ -173,6 +180,7 @@ export default function Header() {
                   onCancel={cancelRegister}
                   submitText="Зарегестрироваться"
                   cancelText="Отмена"
+                  errorMessage={registerErrorMessage}
                 />
               </Modal>
             </RowStack>
