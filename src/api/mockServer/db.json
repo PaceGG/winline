@@ -68,10 +68,10 @@
     },
     {
       "id": "507c",
-      "login": "paceGG",
+      "login": "Юрий",
       "email": "yura3012004@gmail.com",
-      "password": "asd",
-      "balance": 124,
+      "password": "123",
+      "balance": 2139,
       "role": "USER",
       "status": "ACTIVE",
       "createdAt": "2025-11-26T19:48:57.820Z"
