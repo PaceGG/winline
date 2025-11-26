@@ -22,6 +22,7 @@ import FormComponent, { type FormField } from "./FormComponent";
 import { authAPI } from "../api/endpoints/auth";
 import { setUser } from "../store/userSlice";
 import { userAPI } from "../api/endpoints/user";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 const navBarLinks: LinkProps[] = [
   {
@@ -394,7 +395,39 @@ export default function Header() {
           <WithRole allowedRoles="USER">
             <RowStack>
               <Box>
-                <Typography>Баланс: {user?.balance ?? 0} </Typography>
+                {user && (
+                  <>
+                    <Chip
+                      label={`Баланс: ${user.balance}`}
+                      onClick={() => setBalanceModalOpen(true)}
+                      clickable
+                      icon={<AddCircleOutlineIcon />}
+                      color="success"
+                      size="medium"
+                      sx={{
+                        flexDirection: "row-reverse",
+                        color: "white",
+                        "& .MuiChip-icon": {
+                          marginLeft: "0px",
+                          marginRight: "8px",
+                        },
+                      }}
+                    />
+                    <Modal
+                      open={balanceModalOpen}
+                      onClose={onBalanceModalClose}
+                    >
+                      <FormComponent
+                        title="Пополнение баланса"
+                        fields={balanceFields}
+                        onSubmit={handleBalance}
+                        onCancel={cancelBalance}
+                        submitText="Пополнить"
+                        absolute
+                      />
+                    </Modal>
+                  </>
+                )}
               </Box>
               <Box>
                 <Button variant="text" onClick={handleUserInfoClick}>
@@ -445,19 +478,6 @@ export default function Header() {
                         >
                           Баланс: {user.balance}
                         </Button>
-                        <Modal
-                          open={balanceModalOpen}
-                          onClose={onBalanceModalClose}
-                        >
-                          <FormComponent
-                            title="Пополнение баланса"
-                            fields={balanceFields}
-                            onSubmit={handleBalance}
-                            onCancel={cancelBalance}
-                            submitText="Пополнить"
-                            absolute
-                          />
-                        </Modal>
 
                         {/* Логин */}
                         <Button
