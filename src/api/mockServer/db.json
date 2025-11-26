@@ -25,6 +25,26 @@
       "balance": 1000,
       "role": "USER",
       "isBlocked": false
+    },
+    {
+      "id": "6245",
+      "login": "a",
+      "email": "b",
+      "password": "c",
+      "balance": 0,
+      "role": "USER",
+      "status": "ACTIVE",
+      "createdAt": "2025-11-26T18:05:36.479Z"
+    },
+    {
+      "id": "c453",
+      "login": "a",
+      "email": "b",
+      "password": "c",
+      "balance": 0,
+      "role": "USER",
+      "status": "ACTIVE",
+      "createdAt": "2025-11-26T18:06:22.776Z"
     }
   ],
   "bets": [],

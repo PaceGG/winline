@@ -2,7 +2,7 @@ import { httpClient } from "../httpClient";
 import type { User, UserRegisterRequest } from "../types/user";
 
 export const authAPI = {
-  reguster: (
+  register: (
     userRegisterRequest: UserRegisterRequest
   ): Promise<Omit<User, "password">> => {
     const userData: Omit<User, "id"> = {
@@ -14,6 +14,6 @@ export const authAPI = {
       status: "ACTIVE",
       createdAt: new Date(),
     };
-    return httpClient.post("auth/register", userData);
+    return httpClient.post("users", userData);
   },
 };
