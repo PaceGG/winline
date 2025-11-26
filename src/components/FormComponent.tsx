@@ -41,6 +41,7 @@ interface FormProps {
   cancelText?: string;
   loading?: boolean;
   absolute?: boolean;
+  errorMessage?: string;
 }
 
 const FormComponent: React.FC<FormProps> = ({
@@ -52,6 +53,7 @@ const FormComponent: React.FC<FormProps> = ({
   cancelText = "Отмена",
   loading = false,
   absolute = false,
+  errorMessage,
 }) => {
   const [formData, setFormData] = React.useState<Record<string, any>>({});
   const [errors, setErrors] = React.useState<Record<string, string>>({});
@@ -220,6 +222,12 @@ const FormComponent: React.FC<FormProps> = ({
       {title && (
         <Typography variant="h5" component="h2" gutterBottom>
           {title}
+        </Typography>
+      )}
+
+      {errorMessage && (
+        <Typography gutterBottom color="error">
+          {errorMessage}
         </Typography>
       )}
 
