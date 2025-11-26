@@ -211,6 +211,97 @@ export default function Header() {
     onUserLoginModalClose();
   };
 
+  // Почта
+  const mailFields: FormField[] = [
+    { name: "email", label: "Почта", type: "email", required: true },
+  ];
+  const [mailModalOpen, setMailModalOpen] = useState(false);
+
+  const [newMailErrorMessage, setNewMailErrorMessage] = useState<string>();
+
+  const onMailModalClose = () => {
+    setMailModalOpen(false);
+    setNewMailErrorMessage("");
+  };
+
+  const handleMail = async (data: Record<string, any>) => {
+    if (!user) return;
+    try {
+      const response = await userAPI.updateEmail(user.id, data.email);
+      dispatch(setUser(response.data));
+      console.log(response.data);
+      onMailModalClose();
+    } catch (error: any) {
+      if (error.response.status == 409) {
+        setNewMailErrorMessage("Пользователь с таким email уже существует");
+      }
+    }
+  };
+
+  const cancelMail = () => {
+    onMailModalClose();
+  };
+
+  // Пароль
+  const passwordFields: FormField[] = [
+    {
+      name: "currentPassword",
+      label: "Текущий пароль",
+      type: "password",
+      required: true,
+    },
+    {
+      name: "newPassword",
+      label: "Новый пароль",
+      type: "password",
+      required: true,
+    },
+    {
+      name: "confirmPassword",
+      label: "Подтвердите новый пароль",
+      type: "password",
+      required: true,
+    },
+  ];
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
+
+  const [newPasswordErrorMessage, setNewPasswordErrorMessage] =
+    useState<string>();
+
+  const onPasswordModalClose = () => {
+    setPasswordModalOpen(false);
+    setNewPasswordErrorMessage("");
+  };
+
+  const handlePassword = async (data: Record<string, any>) => {
+    if (!user) return;
+
+    // Проверка совпадения новых паролей
+    if (data.newPassword !== data.confirmPassword) {
+      setNewPasswordErrorMessage("Новые пароли не совпадают");
+      return;
+    }
+
+    try {
+      const response = await userAPI.updatePassword(
+        user.id,
+        data.currentPassword,
+        data.newPassword
+      );
+      dispatch(setUser(response.data));
+      onPasswordModalClose();
+    } catch (error) {
+      console.error("Ошибка при изменении пароля:", error);
+      setNewPasswordErrorMessage(
+        "Ошибка при изменении пароля. Проверьте текущий пароль."
+      );
+    }
+  };
+
+  const cancelPassword = () => {
+    onPasswordModalClose();
+  };
+
   // Роли
   const userRoleMap = {
     USER: "Пользователь",
@@ -389,20 +480,64 @@ export default function Header() {
                           />
                         </Modal>
 
-                        <Button {...buttonConfigs.userInfo}>
+                        {/* Почта */}
+                        <Button
+                          {...buttonConfigs.userInfo}
+                          onClick={() => setMailModalOpen(true)}
+                        >
                           {user.email}
                         </Button>
-                        <Button {...buttonConfigs.userInfo}>
-                          {userRoleMap[user.role]}
+                        <Modal open={mailModalOpen} onClose={onMailModalClose}>
+                          <FormComponent
+                            title="Изменение почты"
+                            fields={mailFields}
+                            onSubmit={handleMail}
+                            onCancel={cancelMail}
+                            submitText="Изменить"
+                            absolute
+                            errorMessage={newMailErrorMessage}
+                          />
+                        </Modal>
+
+                        {/* Пароль */}
+                        <Button
+                          {...buttonConfigs.userInfo}
+                          onClick={() => setPasswordModalOpen(true)}
+                        >
+                          Изменить пароль
                         </Button>
+                        <Modal
+                          open={passwordModalOpen}
+                          onClose={onPasswordModalClose}
+                        >
+                          <FormComponent
+                            title="Изменение пароля"
+                            fields={passwordFields}
+                            onSubmit={handlePassword}
+                            onCancel={cancelPassword}
+                            submitText="Изменить"
+                            absolute
+                            errorMessage={newPasswordErrorMessage}
+                          />
+                        </Modal>
+
+                        {/* Роль и статус*/}
                         <Button {...buttonConfigs.userInfo}>
+                          {userRoleMap[user.role]} /{" "}
                           {userStatusMap[user.status]}
                         </Button>
+
+                        {/* Дата создания */}
                         <Button {...buttonConfigs.userInfo}>
                           Создан{" "}
                           {user.createdAt instanceof Date
                             ? user.createdAt.toLocaleString("ru-RU")
                             : new Date(user.createdAt).toLocaleString("ru-RU")}
+                        </Button>
+
+                        {/* Выйти из аккаунта */}
+                        <Button {...buttonConfigs.userInfo} onClick={logout}>
+                          Выйти
                         </Button>
                       </Stack>
                     </Box>
