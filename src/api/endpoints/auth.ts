@@ -1,10 +1,15 @@
 import { httpClient } from "../httpClient";
-import type { User, UserRegisterRequest } from "../types/user";
+import type {
+  User,
+  UserData,
+  UserLoginRequest,
+  UserRegisterRequest,
+} from "../types/user";
 
 export const authAPI = {
-  register: (
+  register: async (
     userRegisterRequest: UserRegisterRequest
-  ): Promise<Omit<User, "password">> => {
+  ): Promise<UserData> => {
     const userData: Omit<User, "id"> = {
       login: userRegisterRequest.login,
       email: userRegisterRequest.email,
@@ -15,5 +20,19 @@ export const authAPI = {
       createdAt: new Date(),
     };
     return httpClient.post("users", userData);
+  },
+
+  login: async (data: UserLoginRequest): Promise<UserData> => {
+    const response = await httpClient.get(
+      `users?email=${data.email}&password=${data.password}`
+    );
+
+    if (response.data.length === 0) {
+      throw new Error("Invalid credentials");
+    }
+
+    const userData = response.data[0];
+    const { password, ...userWithoutPassword } = userData;
+    return userWithoutPassword;
   },
 };

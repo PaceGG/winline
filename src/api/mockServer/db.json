@@ -39,8 +39,8 @@
     {
       "id": "c453",
       "login": "a",
-      "email": "b",
-      "password": "c",
+      "email": "bb",
+      "password": "cc",
       "balance": 0,
       "role": "USER",
       "status": "ACTIVE",

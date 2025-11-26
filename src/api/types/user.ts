@@ -4,6 +4,11 @@ export interface UserRegisterRequest {
   password: string;
 }
 
+export interface UserLoginRequest {
+  email: string;
+  password: string;
+}
+
 export interface User {
   id: string;
   login: string;
@@ -14,3 +19,5 @@ export interface User {
   status: "ACTIVE" | "BLOCKED";
   createdAt: Date;
 }
+
+export interface UserData extends Omit<User, "password"> {}

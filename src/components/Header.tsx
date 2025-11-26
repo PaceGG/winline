@@ -9,6 +9,8 @@ import { useEffect, useState } from "react";
 import { WithRole } from "./WithRole";
 import FormComponent, { type FormField } from "./FormComponent";
 import { authAPI } from "../api/endpoints/auth";
+import type { User } from "../types";
+import type { UserData } from "../api/types/user";
 
 const navBarLinks: LinkProps[] = [
   {
@@ -44,6 +46,32 @@ export default function Header() {
     dispatch(setUser("none"));
   };
 
+  // Форма входа
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
+
+  const onLoginModalClose = () => {
+    setLoginModalOpen(false);
+  };
+
+  const loginFields: FormField[] = [
+    { name: "email", label: "Почта", type: "text", required: true },
+    { name: "password", label: "Пароль", type: "password", required: true },
+  ];
+
+  const handleLogin = async (data: Record<string, any>) => {
+    const loginRequest = {
+      email: data.email,
+      password: data.password,
+    };
+    const user = await authAPI.login(loginRequest);
+    console.log(user);
+    setLoginModalOpen(false);
+  };
+
+  const cancelLogin = () => {
+    setLoginModalOpen(false);
+  };
+
   // Форма регистрации
   const [registerModalOpen, setRegisterModalOpen] = useState(false);
 
@@ -63,13 +91,13 @@ export default function Header() {
     { name: "password", label: "Пароль", type: "password", required: true },
   ];
 
-  const handleRegister = (data: Record<string, any>) => {
+  const handleRegister = async (data: Record<string, any>) => {
     const registerRequest = {
       login: data.login,
       email: data.email,
       password: data.password,
     };
-    authAPI.register(registerRequest);
+    await authAPI.register(registerRequest);
     setRegisterModalOpen(false);
   };
 
@@ -106,9 +134,20 @@ export default function Header() {
 
           <WithRole allowedRoles="none">
             <RowStack>
-              <Button color="secondary" onClick={login}>
+              <Button color="secondary" onClick={() => setLoginModalOpen(true)}>
                 Вход
               </Button>
+              <Modal open={loginModalOpen} onClose={onLoginModalClose}>
+                <FormComponent
+                  absolute
+                  title="Вход"
+                  fields={loginFields}
+                  onSubmit={handleLogin}
+                  onCancel={cancelLogin}
+                  submitText="Войти"
+                  cancelText="Отмена"
+                />
+              </Modal>
               {/* Регистрация */}
               <Button onClick={() => setRegisterModalOpen(true)}>
                 Регистрация
