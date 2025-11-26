@@ -2,10 +2,14 @@ import {
   AppBar,
   Box,
   Button,
+  Chip,
+  Fade,
   Modal,
   Popover,
+  Popper,
   Stack,
   Typography,
+  type ButtonProps,
 } from "@mui/material";
 import Logo from "./Logo";
 import NavBar from "./NavBar";
@@ -134,15 +138,28 @@ export default function Header() {
   };
 
   // Информация о пользователе
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>();
-  const userInfoOpen = Boolean(anchorEl);
+  const [userInfoAnchorEl, setUserInfoAnchorEl] =
+    useState<HTMLElement | null>();
+  const userInfoOpen = Boolean(userInfoAnchorEl);
 
   const handleUserInfoClick = (event: MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+    setUserInfoAnchorEl(event.currentTarget);
   };
 
-  const handleUserInfoClose = () => {
-    setAnchorEl(null);
+  const handleUserInfoClose = (event: MouseEvent<HTMLElement>) => {
+    setUserInfoAnchorEl(null);
+  };
+
+  const [copyUserIdInfoAnchorEl, setCopyUserIdInfoAnchorEl] =
+    useState<HTMLElement | null>();
+  const copyUserIdInfoOpen = Boolean(copyUserIdInfoAnchorEl);
+
+  const copyUserId = (event: MouseEvent<HTMLElement>) => {
+    navigator.clipboard.writeText(user?.id ?? "");
+    setCopyUserIdInfoAnchorEl(event.currentTarget);
+    setTimeout(() => {
+      setCopyUserIdInfoAnchorEl(null);
+    }, 1500);
   };
 
   const userRoleMap = {
@@ -157,6 +174,18 @@ export default function Header() {
     BLOCKED: "Заблокирован",
   };
 
+  const buttonConfigs: { userInfo: ButtonProps } = {
+    userInfo: {
+      variant: "text",
+      sx: {
+        textAlign: "left",
+        justifyContent: "flex-start",
+        color: "black",
+        "&:nth-of-type(odd)": { backgroundColor: "#f8f9fa" },
+        "&:nth-of-type(even)": { backgroundColor: "#e9ecef" },
+      },
+    },
+  };
   return (
     <>
       <AppBar
@@ -233,7 +262,7 @@ export default function Header() {
                   <Popover
                     open={userInfoOpen}
                     onClose={handleUserInfoClose}
-                    anchorEl={anchorEl}
+                    anchorEl={userInfoAnchorEl}
                     anchorOrigin={{
                       vertical: "bottom",
                       horizontal: "right",
@@ -244,17 +273,45 @@ export default function Header() {
                     }}
                   >
                     <Box sx={{ p: 2 }}>
-                      <Stack>
-                        <Typography>Баланс: {user.balance}</Typography>
-                        <Typography>{user.email}</Typography>
-                        <Typography>{userRoleMap[user.role]}</Typography>
-                        <Typography>{userStatusMap[user.status]}</Typography>
-                        <Typography>
+                      <Stack gap={1}>
+                        <Button
+                          onClick={copyUserId}
+                          {...buttonConfigs.userInfo}
+                          sx={{ color: "#a1a1a1ff", fontSize: 12 }}
+                        >
+                          ID: {user.id}
+                        </Button>
+                        <Popper
+                          open={copyUserIdInfoOpen}
+                          anchorEl={copyUserIdInfoAnchorEl}
+                          sx={{ zIndex: 2000 }}
+                          placement="top"
+                          transition
+                        >
+                          {({ TransitionProps }) => (
+                            <Fade {...TransitionProps} timeout={350}>
+                              <Chip label="Скопировано" color="primary" />
+                            </Fade>
+                          )}
+                        </Popper>
+                        <Button {...buttonConfigs.userInfo}>
+                          Баланс: {user.balance}
+                        </Button>
+                        <Button {...buttonConfigs.userInfo}>
+                          {user.email}
+                        </Button>
+                        <Button {...buttonConfigs.userInfo}>
+                          {userRoleMap[user.role]}
+                        </Button>
+                        <Button {...buttonConfigs.userInfo}>
+                          {userStatusMap[user.status]}
+                        </Button>
+                        <Button {...buttonConfigs.userInfo}>
                           Создан{" "}
                           {user.createdAt instanceof Date
                             ? user.createdAt.toLocaleString("ru-RU")
                             : new Date(user.createdAt).toLocaleString("ru-RU")}
-                        </Typography>
+                        </Button>
                       </Stack>
                     </Box>
                   </Popover>
