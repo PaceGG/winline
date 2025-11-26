@@ -1,4 +1,3 @@
-import "./App.css";
 import Header from "./components/Header";
 import { AuthorizationProvider } from "./components/WithRole";
 import { useAppSelector } from "./hooks/redux";

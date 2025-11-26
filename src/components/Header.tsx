@@ -1,4 +1,4 @@
-import { AppBar, Box, Button } from "@mui/material";
+import { AppBar, Box, Button, Typography } from "@mui/material";
 import Logo from "./Logo";
 import NavBar from "./NavBar";
 import type { LinkProps } from "./Link";
@@ -50,6 +50,7 @@ export default function Header() {
         justifyContent: "space-between",
         alignItems: "center",
         bgcolor: "#edf0f5",
+        color: "black",
         px: 30,
         py: 1,
       }}
@@ -70,7 +71,9 @@ export default function Header() {
 
       <WithRole allowedRoles="user">
         <RowStack>
-          <Box>Баланс: 0</Box>
+          <Box>
+            <Typography>Баланс: 0</Typography>
+          </Box>
           <Button onClick={logout}>Выход</Button>
         </RowStack>
       </WithRole>
