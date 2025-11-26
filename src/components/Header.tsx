@@ -114,7 +114,11 @@ export default function Header() {
       await authAPI.register(registerRequest);
       setRegisterModalOpen(false);
     } catch (error: any) {
-      setRegisterErrorMessage(error.message);
+      if (error.response?.status == 409) {
+        setRegisterErrorMessage("Пользователь с таким email уже существует");
+      } else {
+        setRegisterErrorMessage("Произошла ошибка при регистрации");
+      }
     }
   };
 

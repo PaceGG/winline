@@ -22,7 +22,15 @@ export const authAPI = {
   ): Promise<UserData> => {
     const emailExists = await checkEmailExists(userRegisterRequest.email);
     if (emailExists) {
-      throw new Error("Пользователь с таким email уже существует");
+      throw {
+        response: {
+          status: 409,
+          data: {
+            message: "Пользователь с таким email уже существует",
+            code: "EMAIL_EXISTS",
+          },
+        },
+      };
     }
 
     const userData: Omit<User, "id"> = {

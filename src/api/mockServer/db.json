@@ -55,6 +55,16 @@
       "role": "USER",
       "status": "ACTIVE",
       "createdAt": "2025-11-26T19:13:18.553Z"
+    },
+    {
+      "id": "19ad",
+      "login": "фыв",
+      "email": "фыв",
+      "password": "фыв",
+      "balance": 0,
+      "role": "USER",
+      "status": "ACTIVE",
+      "createdAt": "2025-11-26T19:21:22.339Z"
     }
   ],
   "bets": [],
