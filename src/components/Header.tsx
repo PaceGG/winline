@@ -25,6 +25,7 @@ import { authAPI } from "../api/endpoints/auth";
 import { setUser } from "../store/userSlice";
 import { userAPI } from "../api/endpoints/user";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { Link as DomLink } from "react-router-dom";
 
 const navBarLinks: LinkProps[] = [
   {
@@ -389,7 +390,9 @@ export default function Header() {
           }}
         >
           <RowStack gap={6}>
-            <Logo />
+            <DomLink to="/">
+              <Logo />
+            </DomLink>
             <NavBar links={navBarLinks} />
           </RowStack>
 
