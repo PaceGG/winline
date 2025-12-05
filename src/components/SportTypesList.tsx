@@ -15,7 +15,7 @@ export const SportTypesList: React.FC<SportTypesListProps> = ({
   matches,
 }) => {
   return (
-    <Stack gap={0.5} maxWidth={1000} m={"auto"}>
+    <Stack gap={0.5} maxWidth={1000} sx={{ flex: 1 }}>
       {sportTypes.map((sportType) => (
         <SportTypeCard
           key={sportType}

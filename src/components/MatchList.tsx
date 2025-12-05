@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { matchesAPI } from "../api/endpoints/matches";
 import type { Match, MatchStatus } from "../api/types/match";
 import { SportTypesList } from "./SportTypesList";
+import { Box } from "@mui/material";
 
 interface MatchListProps {
   matchStatus: MatchStatus;
@@ -41,11 +42,13 @@ const MatchList = ({ matchStatus }: MatchListProps) => {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <SportTypesList
-      sportTypes={sportTypes}
-      sportTypeNameMap={sportTypeNameMap}
-      matches={matches}
-    />
+    <Box sx={{ display: "flex", justifyContent: "center" }}>
+      <SportTypesList
+        sportTypes={sportTypes}
+        sportTypeNameMap={sportTypeNameMap}
+        matches={matches}
+      />
+    </Box>
   );
 };
 
