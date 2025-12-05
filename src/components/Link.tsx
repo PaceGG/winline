@@ -1,4 +1,5 @@
 import { Link as MuiLink } from "@mui/material";
+import { useLocation } from "react-router-dom";
 
 export interface LinkProps {
   href?: string;
@@ -6,11 +7,13 @@ export interface LinkProps {
 }
 
 export default function Link({ href = "/", label }: LinkProps) {
+  const locate = useLocation();
+
   return (
     <MuiLink
       href={href}
       sx={{
-        color: "#222",
+        color: locate.pathname === `/${href}` ? "" : "#222",
         fontWeight: 700,
         textTransform: "uppercase",
         textDecoration: "none",

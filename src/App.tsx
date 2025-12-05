@@ -10,8 +10,8 @@ function App() {
   return (
     <>
       <AuthorizationProvider getUserRoles={() => [userRole ?? "NONE"]}>
-        <Header />
         <BrowserRouter>
+          <Header />
           <Routes>
             <Route path="/matches" element={<MatchList />} />
           </Routes>
