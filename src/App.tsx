@@ -1,3 +1,4 @@
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Header from "./components/Header";
 import MatchList from "./components/MatchList";
 import { AuthorizationProvider } from "./components/WithRole";
@@ -10,7 +11,11 @@ function App() {
     <>
       <AuthorizationProvider getUserRoles={() => [userRole ?? "NONE"]}>
         <Header />
-        <MatchList />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/matches" element={<MatchList />} />
+          </Routes>
+        </BrowserRouter>
       </AuthorizationProvider>
     </>
   );

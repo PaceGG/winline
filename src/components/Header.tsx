@@ -28,6 +28,10 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 const navBarLinks: LinkProps[] = [
   {
+    label: "Матчи",
+    href: "matches",
+  },
+  {
     label: "О нас",
   },
   {
