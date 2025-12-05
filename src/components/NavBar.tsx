@@ -9,8 +9,8 @@ interface NavBarProps {
 export default function NavBar({ links }: NavBarProps) {
   return (
     <Box display="flex" gap={3}>
-      {links.map((link) => (
-        <Link href={link.href} label={link.label} />
+      {links.map((link, i) => (
+        <Link href={link.href} label={link.label} key={i} />
       ))}
     </Box>
   );
