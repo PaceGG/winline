@@ -7,7 +7,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import RowStack from "./RowStack";
-import type { Handicap, Odds, Total } from "../api/types/match";
+import type { Handicap, Match, Odds, Total } from "../api/types/match";
 import { useState } from "react";
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 
@@ -240,12 +240,14 @@ interface CoefsListProps {
   teams: string[];
   odds: Odds;
   isTeamA?: boolean;
+  match: Match;
 }
 
 export default function CoefsList({
   teams,
   odds,
   isTeamA = true,
+  match,
 }: CoefsListProps) {
   const [currentHandicapValue, setCurrentHandicapValue] = useState<number>(
     odds.handicap?.[0]?.value ?? 0
@@ -282,17 +284,17 @@ export default function CoefsList({
 
   const handleOutcomeClick = (type: "winA" | "draw" | "winB") => {
     // setSelectedOutcome(type);
-    console.log(type);
+    console.log(match, type);
   };
 
   const handleHandicapClick = (type: "home" | "away") => {
     // setSelectedHandicap({ type });
-    console.log({ type });
+    console.log(match, type, currentHandicapValue);
   };
 
   const handleTotalClick = (type: "over" | "under") => {
     // setSelectedTotal({ type });
-    console.log({ type });
+    console.log(match, type, currentTotalValue);
   };
 
   const isHomeTeam = isTeamA;

@@ -32,7 +32,11 @@ export default function MatchesBetsList({ matches }: MatchesBetsListProps) {
             <T>{match.league}</T>
           </Paper>
           <Stack sx={{ p: 1 }}>
-            <CoefsList teams={[match.teamA, match.teamB]} odds={match.odds} />
+            <CoefsList
+              teams={[match.teamA, match.teamB]}
+              odds={match.odds}
+              match={match}
+            />
             {/* <CoefsList team={match.teamB} odds={match.odds} /> */}
             {/* <T>{match.teamB}</T> */}
           </Stack>
