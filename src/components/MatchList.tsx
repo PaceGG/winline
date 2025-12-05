@@ -74,7 +74,6 @@ const MatchList = ({ matchStatus }: MatchListProps) => {
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "column",
-        width: "100%",
         gap: 2,
         p: 2,
       }}

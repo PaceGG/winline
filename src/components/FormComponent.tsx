@@ -83,8 +83,14 @@ const FormComponent: React.FC<FormProps> = ({
   };
 
   const validateField = (field: FormField, value: any): string => {
-    if (field.required && !value && value !== false) {
-      return "Это поле обязательно для заполнения";
+    if (field.required) {
+      if (field.type === "checkbox") {
+        if (value !== true) {
+          return "Это поле обязательно для заполнения";
+        }
+      } else if (!value && value !== 0) {
+        return "Это поле обязательно для заполнения";
+      }
     }
 
     if (field.validation) {
@@ -102,12 +108,20 @@ const FormComponent: React.FC<FormProps> = ({
         return `Максимальная длина: ${maxLength} символов`;
       }
 
-      if (min !== undefined && typeof value === "number" && value < min) {
-        return `Минимальное значение: ${min}`;
-      }
+      if (min !== undefined || max !== undefined) {
+        const numValue = parseFloat(value);
 
-      if (max !== undefined && typeof value === "number" && value > max) {
-        return `Максимальное значение: ${max}`;
+        if (isNaN(numValue)) {
+          return "Введите число";
+        }
+
+        if (min !== undefined && numValue < min) {
+          return `Минимальное значение: ${min}`;
+        }
+
+        if (max !== undefined && numValue > max) {
+          return `Максимальное значение: ${max}`;
+        }
       }
     }
 

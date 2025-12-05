@@ -49,11 +49,13 @@ const navBarLinks: LinkProps[] = [
   },
 ];
 
+import { useModal, useModalWithError, useFormModal } from "../hooks/useModal";
+
 export default function Header() {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user.user);
 
-  // Состояние для Toast уведомлений
+  // Toast уведомления
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [toastSeverity, setToastSeverity] = useState<"success" | "error">(
@@ -73,28 +75,12 @@ export default function Header() {
     event?: React.SyntheticEvent | Event,
     reason?: string
   ) => {
-    if (reason === "clickaway") {
-      return;
-    }
+    if (reason === "clickaway") return;
     setToastOpen(false);
   };
 
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
-
-  const logout = () => {
-    dispatch(setUser(null));
-    showToast("Вы успешно вышли из аккаунта");
-  };
-
-  // Форма входа
-  const [loginModalOpen, setLoginModalOpen] = useState(false);
-  const [loginErrorMessage, setLoginErrorMessage] = useState<string>();
-
-  const onLoginModalClose = () => {
-    cancelLogin();
-  };
+  // Модалка входа
+  const loginModal = useModalWithError();
 
   const loginFields: FormField[] = [
     { name: "email", label: "Почта", type: "text", required: true },
@@ -108,40 +94,24 @@ export default function Header() {
     };
     try {
       const userData = await authAPI.login(loginRequest);
-      console.log("Успешный вход:", userData);
-      setLoginModalOpen(false);
+      loginModal.closeModalWithReset();
       dispatch(setUser(userData));
       showToast("Вы успешно вошли в аккаунт");
     } catch (error: any) {
       if (error.response?.status === 401) {
-        setLoginErrorMessage("Неверная почта или пароль");
+        loginModal.setError("Неверная почта или пароль");
       } else {
-        setLoginErrorMessage("Произошла ошибка при входе");
+        loginModal.setError("Произошла ошибка при входе");
       }
     }
   };
 
-  const cancelLogin = () => {
-    setLoginModalOpen(false);
-    setLoginErrorMessage("");
-  };
-
-  // Форма регистрации
-  const [registerModalOpen, setRegisterModalOpen] = useState(false);
-  const [registerErrorMessage, setRegisterErrorMessage] = useState<string>();
-
-  const onRegisterModalClose = () => {
-    setRegisterModalOpen(false);
-  };
+  // Модалка регистрации
+  const registerModal = useModalWithError();
 
   const registerFields: FormField[] = [
     { name: "login", label: "Имя", type: "text", required: true },
-    {
-      name: "email",
-      label: "Почта",
-      type: "text",
-      required: true,
-    },
+    { name: "email", label: "Почта", type: "text", required: true },
     { name: "password", label: "Пароль", type: "password", required: true },
   ];
 
@@ -153,22 +123,124 @@ export default function Header() {
     };
     try {
       const userData = await authAPI.register(registerRequest);
-      console.log("Зарегестрирован новый пользователь: ", userData);
       dispatch(setUser(userData));
-      setRegisterModalOpen(false);
+      registerModal.closeModalWithReset();
       showToast("Регистрация прошла успешно!");
     } catch (error: any) {
       if (error.response?.status == 409) {
-        setRegisterErrorMessage("Пользователь с таким email уже существует");
+        registerModal.setError("Пользователь с таким email уже существует");
       } else {
-        setRegisterErrorMessage("Произошла ошибка при регистрации");
+        registerModal.setError("Произошла ошибка при регистрации");
       }
     }
   };
 
-  const cancelRegister = () => {
-    setRegisterModalOpen(false);
-    setRegisterErrorMessage("");
+  // Модалка пополнения баланса
+  const balanceModal = useModal();
+
+  const balanceFields: FormField[] = [
+    {
+      name: "amount",
+      label: "Сумма пополнения",
+      type: "number",
+      required: true,
+    },
+  ];
+
+  const handleBalance = async (data: Record<string, any>) => {
+    if (!user) return;
+    const response = await userAPI.increaseBalance(
+      user.id,
+      Number(data.amount)
+    );
+    dispatch(setUser(response.data));
+    balanceModal.closeModal();
+    showToast("Баланс успешно пополнен");
+  };
+
+  // Модалка изменения логина
+  const userLoginModal = useModal();
+
+  const userLoginFields: FormField[] = [
+    { name: "login", label: "Имя", type: "text", required: true },
+  ];
+
+  const handleUserLogin = async (data: Record<string, any>) => {
+    if (!user) return;
+    const response = await userAPI.updateLogin(user.id, data.login);
+    dispatch(setUser(response.data));
+    userLoginModal.closeModal();
+    showToast("Логин успешно изменен");
+  };
+
+  // Модалка изменения почты
+  const mailModal = useModalWithError();
+
+  const mailFields: FormField[] = [
+    { name: "email", label: "Почта", type: "email", required: true },
+  ];
+
+  const handleMail = async (data: Record<string, any>) => {
+    if (!user) return;
+    try {
+      const response = await userAPI.updateEmail(user.id, data.email);
+      dispatch(setUser(response.data));
+      mailModal.closeModalWithReset();
+      showToast("Email успешно изменен");
+    } catch (error: any) {
+      if (error.response.status == 409) {
+        mailModal.setError("Пользователь с таким email уже существует");
+      }
+    }
+  };
+
+  // Модалка изменения пароля
+  const passwordModal = useModalWithError();
+
+  const passwordFields: FormField[] = [
+    {
+      name: "currentPassword",
+      label: "Текущий пароль",
+      type: "password",
+      required: true,
+    },
+    {
+      name: "newPassword",
+      label: "Новый пароль",
+      type: "password",
+      required: true,
+    },
+    {
+      name: "confirmPassword",
+      label: "Подтвердите новый пароль",
+      type: "password",
+      required: true,
+    },
+  ];
+
+  const handlePassword = async (data: Record<string, any>) => {
+    if (!user) return;
+
+    if (data.newPassword !== data.confirmPassword) {
+      passwordModal.setError("Новые пароли не совпадают");
+      return;
+    }
+
+    try {
+      const response = await userAPI.updatePassword(
+        user.id,
+        data.currentPassword,
+        data.newPassword
+      );
+      dispatch(setUser(response.data));
+      passwordModal.closeModalWithReset();
+      showToast("Пароль успешно изменен");
+    } catch (error) {
+      console.error("Ошибка при изменении пароля:", error);
+      passwordModal.setError(
+        "Ошибка при изменении пароля. Проверьте текущий пароль."
+      );
+    }
   };
 
   // Информация о пользователе
@@ -198,160 +270,9 @@ export default function Header() {
     }, 1500);
   };
 
-  // Баланс
-  const balanceFields: FormField[] = [
-    {
-      name: "amount",
-      label: "Сумма пополнения",
-      type: "number",
-      required: true,
-    },
-  ];
-  const [balanceModalOpen, setBalanceModalOpen] = useState(false);
-
-  const onBalanceModalClose = () => {
-    setBalanceModalOpen(false);
-  };
-
-  const handleBalance = async (data: Record<string, any>) => {
-    if (!user) return;
-    const response = await userAPI.updateBalance(user.id, Number(data.amount));
-    dispatch(setUser(response.data));
-    onBalanceModalClose();
-    showToast("Баланс успешно пополнен");
-  };
-
-  const cancelBalance = () => {
-    onBalanceModalClose();
-  };
-
-  // Логин
-  const userLoginFields: FormField[] = [
-    { name: "login", label: "Имя", type: "text", required: true },
-  ];
-  const [userLoginModalOpen, setUserLoginModalOpen] = useState(false);
-
-  const onUserLoginModalClose = () => {
-    setUserLoginModalOpen(false);
-  };
-
-  const handleUserLogin = async (data: Record<string, any>) => {
-    if (!user) return;
-    const response = await userAPI.updateLogin(user.id, data.login);
-    dispatch(setUser(response.data));
-    onUserLoginModalClose();
-    showToast("Логин успешно изменен");
-  };
-
-  const cancelUserLogin = () => {
-    onUserLoginModalClose();
-  };
-
-  // Почта
-  const mailFields: FormField[] = [
-    { name: "email", label: "Почта", type: "email", required: true },
-  ];
-  const [mailModalOpen, setMailModalOpen] = useState(false);
-
-  const [newMailErrorMessage, setNewMailErrorMessage] = useState<string>();
-
-  const onMailModalClose = () => {
-    setMailModalOpen(false);
-    setNewMailErrorMessage("");
-  };
-
-  const handleMail = async (data: Record<string, any>) => {
-    if (!user) return;
-    try {
-      const response = await userAPI.updateEmail(user.id, data.email);
-      dispatch(setUser(response.data));
-      console.log(response.data);
-      onMailModalClose();
-      showToast("Email успешно изменен");
-    } catch (error: any) {
-      if (error.response.status == 409) {
-        setNewMailErrorMessage("Пользователь с таким email уже существует");
-      }
-    }
-  };
-
-  const cancelMail = () => {
-    onMailModalClose();
-  };
-
-  // Пароль
-  const passwordFields: FormField[] = [
-    {
-      name: "currentPassword",
-      label: "Текущий пароль",
-      type: "password",
-      required: true,
-    },
-    {
-      name: "newPassword",
-      label: "Новый пароль",
-      type: "password",
-      required: true,
-    },
-    {
-      name: "confirmPassword",
-      label: "Подтвердите новый пароль",
-      type: "password",
-      required: true,
-    },
-  ];
-  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
-
-  const [newPasswordErrorMessage, setNewPasswordErrorMessage] =
-    useState<string>();
-
-  const onPasswordModalClose = () => {
-    setPasswordModalOpen(false);
-    setNewPasswordErrorMessage("");
-  };
-
-  const handlePassword = async (data: Record<string, any>) => {
-    if (!user) return;
-
-    // Проверка совпадения новых паролей
-    if (data.newPassword !== data.confirmPassword) {
-      setNewPasswordErrorMessage("Новые пароли не совпадают");
-      return;
-    }
-
-    try {
-      const response = await userAPI.updatePassword(
-        user.id,
-        data.currentPassword,
-        data.newPassword
-      );
-      dispatch(setUser(response.data));
-      onPasswordModalClose();
-      showToast("Пароль успешно изменен");
-    } catch (error) {
-      console.error("Ошибка при изменении пароля:", error);
-      setNewPasswordErrorMessage(
-        "Ошибка при изменении пароля. Проверьте текущий пароль."
-      );
-    }
-  };
-
-  const cancelPassword = () => {
-    onPasswordModalClose();
-  };
-
-  // Роли
-  const userRoleMap = {
-    USER: "Пользователь",
-    ADMIN: "Администратор",
-    SUPPORT: "Служба поддержки",
-    NONE: "",
-  };
-
-  // Статус
-  const userStatusMap = {
-    ACTIVE: "Активный",
-    BLOCKED: "Заблокирован",
+  const logout = () => {
+    dispatch(setUser(null));
+    showToast("Вы успешно вышли из аккаунта");
   };
 
   const buttonConfigs: { userInfo: ButtonProps } = {
@@ -367,14 +288,23 @@ export default function Header() {
     },
   };
 
+  const userRoleMap = {
+    USER: "Пользователь",
+    ADMIN: "Администратор",
+    SUPPORT: "Служба поддержки",
+    NONE: "",
+  };
+
+  // Статус
+  const userStatusMap = {
+    ACTIVE: "Активный",
+    BLOCKED: "Заблокирован",
+  };
+
   return (
     <>
       <AppBar
-        sx={{
-          bgcolor: "#edf0f5",
-          color: "black",
-          padding: "8px 0 !important",
-        }}
+        sx={{ bgcolor: "#edf0f5", color: "black", padding: "8px 0 !important" }}
       >
         <Box
           sx={{
@@ -398,35 +328,39 @@ export default function Header() {
 
           <WithRole allowedRoles="NONE">
             <RowStack>
-              <Button color="secondary" onClick={() => setLoginModalOpen(true)}>
+              <Button color="secondary" onClick={loginModal.openModal}>
                 Вход
               </Button>
-              <Modal open={loginModalOpen} onClose={onLoginModalClose}>
+              <Modal
+                open={loginModal.isOpen}
+                onClose={loginModal.closeModalWithReset}
+              >
                 <FormComponent
                   absolute
                   title="Вход"
                   fields={loginFields}
                   onSubmit={handleLogin}
-                  onCancel={cancelLogin}
+                  onCancel={loginModal.closeModalWithReset}
                   submitText="Войти"
                   cancelText="Отмена"
-                  errorMessage={loginErrorMessage}
+                  errorMessage={loginModal.error}
                 />
               </Modal>
-              {/* Регистрация */}
-              <Button onClick={() => setRegisterModalOpen(true)}>
-                Регистрация
-              </Button>
-              <Modal open={registerModalOpen} onClose={onRegisterModalClose}>
+
+              <Button onClick={registerModal.openModal}>Регистрация</Button>
+              <Modal
+                open={registerModal.isOpen}
+                onClose={registerModal.closeModalWithReset}
+              >
                 <FormComponent
                   absolute
                   title="Регистрация"
                   fields={registerFields}
                   onSubmit={handleRegister}
-                  onCancel={cancelRegister}
+                  onCancel={registerModal.closeModalWithReset}
                   submitText="Зарегестрироваться"
                   cancelText="Отмена"
-                  errorMessage={registerErrorMessage}
+                  errorMessage={registerModal.error}
                 />
               </Modal>
             </RowStack>
@@ -439,7 +373,7 @@ export default function Header() {
                   <>
                     <Chip
                       label={`Баланс: ${user.balance}`}
-                      onClick={() => setBalanceModalOpen(true)}
+                      onClick={balanceModal.openModal}
                       clickable
                       icon={<AddCircleOutlineIcon />}
                       color="success"
@@ -454,14 +388,14 @@ export default function Header() {
                       }}
                     />
                     <Modal
-                      open={balanceModalOpen}
-                      onClose={onBalanceModalClose}
+                      open={balanceModal.isOpen}
+                      onClose={balanceModal.closeModal}
                     >
                       <FormComponent
                         title="Пополнение баланса"
                         fields={balanceFields}
                         onSubmit={handleBalance}
-                        onCancel={cancelBalance}
+                        onCancel={balanceModal.closeModal}
                         submitText="Пополнить"
                         absolute
                       />
@@ -469,6 +403,7 @@ export default function Header() {
                   </>
                 )}
               </Box>
+
               <Box>
                 <Button variant="text" onClick={handleUserInfoClick}>
                   {user?.login}
@@ -478,14 +413,8 @@ export default function Header() {
                     open={userInfoOpen}
                     onClose={handleUserInfoClose}
                     anchorEl={userInfoAnchorEl}
-                    anchorOrigin={{
-                      vertical: "bottom",
-                      horizontal: "right",
-                    }}
-                    transformOrigin={{
-                      vertical: "top",
-                      horizontal: "right",
-                    }}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    transformOrigin={{ vertical: "top", horizontal: "right" }}
                   >
                     <Box sx={{ p: 2 }}>
                       <Stack gap={1}>
@@ -514,7 +443,7 @@ export default function Header() {
                         {/* БАЛАНС */}
                         <Button
                           {...buttonConfigs.userInfo}
-                          onClick={() => setBalanceModalOpen(true)}
+                          onClick={balanceModal.openModal}
                         >
                           Баланс: {user.balance}
                         </Button>
@@ -522,19 +451,19 @@ export default function Header() {
                         {/* Логин */}
                         <Button
                           {...buttonConfigs.userInfo}
-                          onClick={() => setUserLoginModalOpen(true)}
+                          onClick={userLoginModal.openModal}
                         >
                           {user.login}
                         </Button>
                         <Modal
-                          open={userLoginModalOpen}
-                          onClose={onUserLoginModalClose}
+                          open={userLoginModal.isOpen}
+                          onClose={userLoginModal.closeModal}
                         >
                           <FormComponent
                             title="Изменение логина"
                             fields={userLoginFields}
                             onSubmit={handleUserLogin}
-                            onCancel={cancelUserLogin}
+                            onCancel={userLoginModal.closeModal}
                             submitText="Изменить"
                             absolute
                           />
@@ -543,45 +472,48 @@ export default function Header() {
                         {/* Почта */}
                         <Button
                           {...buttonConfigs.userInfo}
-                          onClick={() => setMailModalOpen(true)}
+                          onClick={mailModal.openModal}
                         >
                           {user.email}
                         </Button>
-                        <Modal open={mailModalOpen} onClose={onMailModalClose}>
+                        <Modal
+                          open={mailModal.isOpen}
+                          onClose={mailModal.closeModalWithReset}
+                        >
                           <FormComponent
                             title="Изменение почты"
                             fields={mailFields}
                             onSubmit={handleMail}
-                            onCancel={cancelMail}
+                            onCancel={mailModal.closeModalWithReset}
                             submitText="Изменить"
                             absolute
-                            errorMessage={newMailErrorMessage}
+                            errorMessage={mailModal.error}
                           />
                         </Modal>
 
                         {/* Пароль */}
                         <Button
                           {...buttonConfigs.userInfo}
-                          onClick={() => setPasswordModalOpen(true)}
+                          onClick={passwordModal.openModal}
                         >
                           Изменить пароль
                         </Button>
                         <Modal
-                          open={passwordModalOpen}
-                          onClose={onPasswordModalClose}
+                          open={passwordModal.isOpen}
+                          onClose={passwordModal.closeModalWithReset}
                         >
                           <FormComponent
                             title="Изменение пароля"
                             fields={passwordFields}
                             onSubmit={handlePassword}
-                            onCancel={cancelPassword}
+                            onCancel={passwordModal.closeModalWithReset}
                             submitText="Изменить"
                             absolute
-                            errorMessage={newPasswordErrorMessage}
+                            errorMessage={passwordModal.error}
                           />
                         </Modal>
 
-                        {/* Роль и статус*/}
+                        {/* Роль и статус */}
                         <Button {...buttonConfigs.userInfo}>
                           {userRoleMap[user.role]} /{" "}
                           {userStatusMap[user.status]}

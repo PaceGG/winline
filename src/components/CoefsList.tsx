@@ -5,11 +5,18 @@ import {
   Typography as T,
   Menu,
   MenuItem,
+  Modal,
 } from "@mui/material";
 import RowStack from "./RowStack";
 import type { Handicap, Match, Odds, Total } from "../api/types/match";
 import { useState } from "react";
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
+import { useModalWithError } from "../hooks/useModal";
+import type { FormField } from "./FormComponent";
+import FormComponent from "./FormComponent";
+import { useAppDispatch, useAppSelector } from "../hooks/redux";
+import { userAPI } from "../api/endpoints/user";
+import { setUser } from "../store/userSlice";
 
 interface CoefBoxProps {
   coef?: number;
@@ -70,7 +77,6 @@ function CoefValueSelector({
   selection,
   currentValue,
   onChange,
-  label = "Выбрать",
   type,
 }: CoefValueSelectorProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -256,14 +262,8 @@ export default function CoefsList({
     odds.total?.[0]?.value ?? 0
   );
 
-  // Состояния для выбранных коэффициентов
-  const [selectedOutcome, setSelectedOutcome] = useState<string | null>(null);
-  const [selectedHandicap, setSelectedHandicap] = useState<{
-    type: "home" | "away";
-  } | null>(null);
-  const [selectedTotal, setSelectedTotal] = useState<{
-    type: "over" | "under";
-  } | null>(null);
+  const userData = useAppSelector((state) => state.user.user);
+  const dispatch = useAppDispatch();
 
   // Функции для получения коэффициентов для выбранных значений
   const getHandicapCoef = (forHome: boolean) => {
@@ -282,22 +282,53 @@ export default function CoefsList({
     return total[isOver ? "over" : "under"];
   };
 
-  const handleOutcomeClick = (type: "winA" | "draw" | "winB") => {
-    // setSelectedOutcome(type);
-    console.log(match, type);
-  };
-
-  const handleHandicapClick = (type: "home" | "away") => {
-    // setSelectedHandicap({ type });
-    console.log(match, type, currentHandicapValue);
-  };
-
-  const handleTotalClick = (type: "over" | "under") => {
-    // setSelectedTotal({ type });
-    console.log(match, type, currentTotalValue);
-  };
-
   const isHomeTeam = isTeamA;
+
+  // Логика создания ставки
+  const [selectedMatchType, setSelectedMatchType] = useState<string>();
+  const [currentCoef, setCurrentCoef] = useState<number>();
+
+  const makeBetModal = useModalWithError();
+
+  const makeBetFields: FormField[] = [
+    {
+      name: "amount",
+      label: "Сумма ставки",
+      type: "number",
+      required: true,
+      validation: { min: 100 },
+    },
+  ];
+
+  const handleCoefBoxClick = (matchType: string, coef: number) => {
+    makeBetModal.openModal();
+    setSelectedMatchType(matchType);
+    setCurrentCoef(coef);
+  };
+
+  const handleMakeBet = async (data: Record<string, any>) => {
+    if (!userData) {
+      makeBetModal.setError(
+        "Ошибка пользователя. Попробуйте перезайти в аккаунт"
+      );
+      return;
+    }
+
+    if (userData.balance < data.amount) {
+      makeBetModal.setError("На счёте не достаточно средств");
+      return;
+    }
+
+    console.log(
+      match,
+      selectedMatchType,
+      currentHandicapValue,
+      currentTotalValue
+    );
+    const response = await userAPI.increaseBalance(userData.id, -data.amount);
+    dispatch(setUser(response.data));
+    makeBetModal.closeModalWithReset();
+  };
 
   return (
     <Box
@@ -324,18 +355,25 @@ export default function CoefsList({
           <RowStack gap="3px">
             <CoefBox
               coef={isHomeTeam ? odds.winA : odds.winB}
-              onClick={() => handleOutcomeClick(isHomeTeam ? "winA" : "winB")}
-              isSelected={selectedOutcome === (isHomeTeam ? "winA" : "winB")}
+              onClick={() =>
+                handleCoefBoxClick(
+                  isHomeTeam ? "winA" : "winB",
+                  isHomeTeam ? odds.winA : odds.winB
+                )
+              }
             />
             <CoefBox
               coef={odds.draw}
-              onClick={() => handleOutcomeClick("draw")}
-              isSelected={selectedOutcome === "draw"}
+              onClick={() => handleCoefBoxClick("draw", odds.draw)}
             />
             <CoefBox
               coef={isHomeTeam ? odds.winB : odds.winA}
-              onClick={() => handleOutcomeClick(isHomeTeam ? "winB" : "winA")}
-              isSelected={selectedOutcome === (isHomeTeam ? "winB" : "winA")}
+              onClick={() =>
+                handleCoefBoxClick(
+                  isHomeTeam ? "winB" : "winA",
+                  isHomeTeam ? odds.winB : odds.winA
+                )
+              }
             />
           </RowStack>
 
@@ -346,8 +384,9 @@ export default function CoefsList({
             <RowStack gap="3px" alignItems="center">
               <CoefBox
                 coef={getHandicapCoef(true)}
-                onClick={() => handleHandicapClick("home")}
-                isSelected={selectedHandicap?.type === "home"}
+                onClick={() =>
+                  handleCoefBoxClick("home", getHandicapCoef(true) ?? 0)
+                }
               />
               <CoefValueSelector
                 selection={odds.handicap}
@@ -358,8 +397,9 @@ export default function CoefsList({
               />
               <CoefBox
                 coef={getHandicapCoef(false)}
-                onClick={() => handleHandicapClick("away")}
-                isSelected={selectedHandicap?.type === "away"}
+                onClick={() =>
+                  handleCoefBoxClick("away", getHandicapCoef(false) ?? 0)
+                }
               />
             </RowStack>
           ) : (
@@ -373,8 +413,9 @@ export default function CoefsList({
             <RowStack gap="3px" alignItems="center">
               <CoefBox
                 coef={getTotalCoef(true)}
-                onClick={() => handleTotalClick("over")}
-                isSelected={selectedTotal?.type === "over"}
+                onClick={() =>
+                  handleCoefBoxClick("over", getTotalCoef(true) ?? 0)
+                }
               />
               <CoefValueSelector
                 selection={odds.total}
@@ -385,8 +426,9 @@ export default function CoefsList({
               />
               <CoefBox
                 coef={getTotalCoef(false)}
-                onClick={() => handleTotalClick("under")}
-                isSelected={selectedTotal?.type === "under"}
+                onClick={() =>
+                  handleCoefBoxClick("under", getTotalCoef(false) ?? 0)
+                }
               />
             </RowStack>
           ) : (
@@ -394,6 +436,26 @@ export default function CoefsList({
           )}
         </RowStack>
       </RowStack>
+      <Modal
+        open={makeBetModal.isOpen}
+        onClose={makeBetModal.closeModalWithReset}
+      >
+        <FormComponent
+          title={`"${match.league}" ${match.teamA} vs. ${
+            match.teamB
+          } | ${selectedMatchType} ${
+            selectedMatchType == "over" || selectedMatchType == "under"
+              ? currentTotalValue
+              : ""
+          } (x${currentCoef})`}
+          fields={makeBetFields}
+          onSubmit={handleMakeBet}
+          onCancel={makeBetModal.closeModalWithReset}
+          submitText="Сделать ставку"
+          absolute
+          errorMessage={makeBetModal.error}
+        />
+      </Modal>
     </Box>
   );
 }

@@ -13,7 +13,7 @@ export const userAPI = {
     return user;
   },
 
-  updateBalance: async (userId: string, amount: number) => {
+  increaseBalance: async (userId: string, amount: number) => {
     const user = await userAPI.get(userId);
 
     const currentBalance = user.balance;
