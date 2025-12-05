@@ -1,19 +1,209 @@
 {
   "matches": [
     {
-      "id": "1",
-      "teamA": "Челси",
-      "teamB": "Манчестер Сити",
-      "sportType": "FOOTBALL",
-      "league": "Английская Премьер-Лига",
-      "startTime": "2025-10-05T17:00:00Z",
+      "id": "match_001",
+      "teamA": "FC Barcelona",
+      "teamB": "Real Madrid",
+      "sportType": "Soccer",
+      "league": "La Liga",
+      "startTime": "2024-10-20T20:00:00Z",
       "status": "UPCOMING",
       "scoreA": null,
       "scoreB": null,
       "odds": {
-        "winA": 3.2,
+        "winA": 2.1,
+        "draw": 3.5,
+        "winB": 3.2,
+        "handicap": [
+          { "value": -1.5, "oddsA": 2.8, "oddsB": 1.45 },
+          { "value": -0.5, "oddsA": 1.9, "oddsB": 1.95 }
+        ],
+        "total": [
+          { "value": 2.5, "over": 1.85, "under": 1.95 },
+          { "value": 3.5, "over": 2.3, "under": 1.65 }
+        ]
+      }
+    },
+    {
+      "id": "match_002",
+      "teamA": "Lakers",
+      "teamB": "Warriors",
+      "sportType": "Basketball",
+      "league": "NBA",
+      "startTime": "2024-10-22T02:30:00Z",
+      "status": "live",
+      "scoreA": 78,
+      "scoreB": 82,
+      "odds": {
+        "winA": 2.75,
+        "draw": null,
+        "winB": 1.45
+      }
+    },
+    {
+      "id": "match_003",
+      "teamA": "New York Yankees",
+      "teamB": "Boston Red Sox",
+      "sportType": "Baseball",
+      "league": "MLB",
+      "startTime": "2024-10-19T23:05:00Z",
+      "status": "finished",
+      "scoreA": 5,
+      "scoreB": 3,
+      "odds": {
+        "winA": 1.8,
+        "draw": 3.75,
+        "winB": 2.1,
+        "handicap": [],
+        "total": []
+      }
+    },
+    {
+      "id": "match_004",
+      "teamA": "Manchester United",
+      "teamB": "Liverpool",
+      "sportType": "Soccer",
+      "league": "Premier League",
+      "startTime": "2024-10-25T16:30:00Z",
+      "status": "UPCOMING",
+      "scoreA": null,
+      "scoreB": null,
+      "odds": {
+        "winA": 3.1,
         "draw": 3.4,
-        "winB": 2.1
+        "winB": 2.25
+      }
+    },
+    {
+      "id": "match_005",
+      "teamA": "",
+      "teamB": "Chelsea",
+      "sportType": "Soccer",
+      "league": "Premier League",
+      "startTime": "2024-10-28T15:00:00Z",
+      "status": "postponed",
+      "scoreA": null,
+      "scoreB": null,
+      "odds": {
+        "winA": null,
+        "draw": null,
+        "winB": null
+      }
+    },
+    {
+      "id": "match_006",
+      "teamA": "PSG",
+      "teamB": "Marseille",
+      "sportType": "Soccer",
+      "league": "Ligue 1",
+      "startTime": "2024-10-21T19:00:00Z",
+      "status": "cancelled",
+      "scoreA": null,
+      "scoreB": null,
+      "odds": {}
+    },
+    {
+      "id": "match_007",
+      "teamA": "Bayern Munich",
+      "teamB": "Borussia Dortmund",
+      "sportType": "Soccer",
+      "league": "Bundesliga",
+      "startTime": "2024-10-23T20:30:00Z",
+      "status": "UPCOMING",
+      "scoreA": null,
+      "scoreB": null,
+      "odds": {
+        "winA": 1.65,
+        "draw": 4.0,
+        "winB": 5.0,
+        "handicap": [{ "value": -1.0, "oddsA": 2.1, "oddsB": 1.75 }],
+        "total": [{ "value": 2.5, "over": 1.7, "under": 2.15 }]
+      }
+    },
+    {
+      "id": "match_008",
+      "teamA": "Inter Miami",
+      "teamB": "Atlanta United",
+      "sportType": "Soccer",
+      "league": "MLS",
+      "startTime": "2024-10-26T00:30:00Z",
+      "status": "UPCOMING",
+      "scoreA": null,
+      "scoreB": null,
+      "odds": {
+        "winA": 1.95,
+        "draw": 3.6,
+        "winB": 3.8,
+        "handicap": [{ "value": -0.5, "oddsA": 2.05, "oddsB": 1.8 }]
+      }
+    },
+    {
+      "id": "match_009",
+      "teamA": "FC Barcelona",
+      "teamB": "Atletico Madrid",
+      "sportType": "Soccer",
+      "league": "La Liga",
+      "startTime": "2024-11-01T20:00:00Z",
+      "status": "UPCOMING",
+      "scoreA": null,
+      "scoreB": null,
+      "odds": {
+        "winA": 1.75,
+        "draw": 3.75,
+        "winB": 4.5
+      }
+    },
+    {
+      "id": "match_010",
+      "teamA": "Chicago Bulls",
+      "teamB": "Miami Heat",
+      "sportType": "Basketball",
+      "league": "NBA",
+      "startTime": "2024-10-24T23:00:00Z",
+      "status": "UPCOMING",
+      "scoreA": null,
+      "scoreB": null,
+      "odds": {
+        "winA": 2.3,
+        "draw": null,
+        "winB": 1.62,
+        "handicap": [{ "value": -3.5, "oddsA": 1.9, "oddsB": 1.9 }]
+      }
+    },
+    {
+      "id": "",
+      "teamA": "Team A",
+      "teamB": "Team B",
+      "sportType": "Tennis",
+      "league": "ATP Tour",
+      "startTime": "2024-10-27T14:00:00Z",
+      "status": "UPCOMING",
+      "scoreA": null,
+      "scoreB": null,
+      "odds": {
+        "winA": 1.85,
+        "draw": null,
+        "winB": 1.95
+      }
+    },
+    {
+      "id": "match_012",
+      "teamA": "Juventus",
+      "teamB": "AC Milan",
+      "sportType": "Soccer",
+      "league": "Serie A",
+      "startTime": "2024-10-29T19:45:00Z",
+      "status": "finished",
+      "scoreA": 2,
+      "scoreB": 2,
+      "odds": {
+        "winA": 2.2,
+        "draw": 3.3,
+        "winB": 3.1,
+        "total": [
+          { "value": 1.5, "over": 1.5, "under": 2.5 },
+          { "value": 2.5, "over": 2.1, "under": 1.72 }
+        ]
       }
     }
   ],

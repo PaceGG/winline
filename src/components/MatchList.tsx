@@ -1,15 +1,27 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { matchesAPI } from "../api/endpoints/matches";
-import type { Match } from "../api/types/match";
+import type { Match, MatchStatus } from "../api/types/match";
+import { SportTypesList } from "./SportTypesList";
 
-const MatchList = () => {
+interface MatchListProps {
+  matchStatus: MatchStatus;
+}
+
+const sportTypeNameMap = {
+  FOOTBALL: "Футбол",
+  BASEBALL: "Бейсбол",
+  BASKETBALL: "Баскетбол",
+  AMERICAN_FOOTBALL: "Американский футбол",
+};
+
+const MatchList = ({ matchStatus }: MatchListProps) => {
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadMatches = async () => {
       try {
-        const response = await matchesAPI.getMatches({ status: "UPCOMING" });
+        const response = await matchesAPI.getMatches({ status: matchStatus });
         console.log(response.data);
         setMatches(response.data);
       } catch (error) {
@@ -20,24 +32,20 @@ const MatchList = () => {
     };
 
     loadMatches();
-  }, []);
+  }, [matchStatus]);
+
+  const sportTypes = useMemo(() => {
+    return [...new Set(matches.map((match) => match.sportType))];
+  }, [matches]);
 
   if (loading) return <div>Loading...</div>;
 
   return (
-    <div>
-      {matches.map((match) => (
-        <div key={match.id} className="match-card">
-          <h3>
-            {match.teamA} vs {match.teamB}
-          </h3>
-          <div>
-            Коэффициенты: П1 - {match.odds.winA}, Х - {match.odds.draw}, П2 -{" "}
-            {match.odds.winB}
-          </div>
-        </div>
-      ))}
-    </div>
+    <SportTypesList
+      sportTypes={sportTypes}
+      sportTypeNameMap={sportTypeNameMap}
+      matches={matches}
+    />
   );
 };
 

@@ -1,3 +1,16 @@
+export type MatchStatus = "UPCOMING" | "LIVE" | "FINISHED" | "CANCELLED";
+
+export type Handicap = { value: number; oddsA: number; oddsB: number };
+export type Total = { value: number; over: number; under: number };
+
+export type Odds = {
+  winA: number;
+  draw: number;
+  winB: number;
+  handicap?: Handicap[];
+  total?: Total[];
+};
+
 export interface Match {
   id: string;
   teamA: string;
@@ -5,14 +18,8 @@ export interface Match {
   sportType: string;
   league: string;
   startTime: string;
-  status: "UPCOMING" | "LIVE" | "FINISHED" | "CANCELLED";
+  status: MatchStatus;
   scoreA: number | null;
   scoreB: number | null;
-  odds: {
-    winA: number;
-    draw: number;
-    winB: number;
-    handicap?: { value: number; oddsA: number; oddsB: number }[];
-    total?: { value: number; over: number; under: number }[];
-  };
+  odds: Odds;
 }

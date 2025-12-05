@@ -373,7 +373,7 @@ export default function Header() {
         sx={{
           bgcolor: "#edf0f5",
           color: "black",
-          py: 1,
+          padding: "8px 0 !important",
         }}
       >
         <Box

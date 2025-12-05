@@ -13,7 +13,10 @@ function App() {
         <BrowserRouter>
           <Header />
           <Routes>
-            <Route path="/matches" element={<MatchList />} />
+            <Route
+              path="/matches"
+              element={<MatchList matchStatus="UPCOMING" />}
+            />
           </Routes>
         </BrowserRouter>
       </AuthorizationProvider>

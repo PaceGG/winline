@@ -1,5 +1,6 @@
 body {
   margin: 0;
-  display: flex;
-  background-color: "#e2e6ee";
+  padding: 0 !important;
+  padding-top: 75px !important;
+  background-color: #e2e6ee;
 }
