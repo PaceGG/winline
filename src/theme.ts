@@ -14,6 +14,9 @@ export const theme = createTheme({
       light: deepPurple[300],
       dark: deepPurple[700],
     },
+    text: {
+      primary: "#000510",
+    },
     error: {
       main: "#f44336",
     },

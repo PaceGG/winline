@@ -1,8 +1,27 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  Navigate,
+  Outlet,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import Header from "./components/Header";
 import MatchList from "./components/MatchList";
 import { AuthorizationProvider } from "./components/WithRole";
 import { useAppSelector } from "./hooks/redux";
+import LoginPage from "./components/LoginPage";
+import { useEffect } from "react";
+import ToastContainer from "./components/ToastContainer";
+
+function MainLayout() {
+  return (
+    <>
+      <Header />
+      <Outlet />
+    </>
+  );
+}
 
 function App() {
   const userRole = useAppSelector((state) => state.user.user?.role);
@@ -11,14 +30,18 @@ function App() {
     <>
       <AuthorizationProvider getUserRoles={() => [userRole ?? "NONE"]}>
         <BrowserRouter>
-          <Header />
           <Routes>
-            <Route
-              path="/matches"
-              element={<MatchList matchStatus="UPCOMING" />}
-            />
+            <Route path="/" element={<Navigate to="/matches" replace />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route element={<MainLayout />}>
+              <Route
+                path="/matches"
+                element={<MatchList matchStatus="UPCOMING" />}
+              />
+            </Route>
           </Routes>
         </BrowserRouter>
+        <ToastContainer />
       </AuthorizationProvider>
     </>
   );

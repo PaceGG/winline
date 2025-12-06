@@ -1,3 +1,5 @@
+import { store } from "../../store";
+import { setUser } from "../../store/userSlice";
 import { httpClient } from "../httpClient";
 import type {
   User,
@@ -67,6 +69,9 @@ export const authAPI = {
 
     const userData = response.data[0];
     const { password, ...userWithoutPassword } = userData;
+
+    store.dispatch(setUser(userWithoutPassword));
+
     return userWithoutPassword;
   },
 };

@@ -25,7 +25,7 @@ import { authAPI } from "../api/endpoints/auth";
 import { setUser } from "../store/userSlice";
 import { userAPI } from "../api/endpoints/user";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import { Link as DomLink } from "react-router-dom";
+import { Link as DomLink, useLocation, useNavigate } from "react-router-dom";
 
 const navBarLinks: LinkProps[] = [
   {
@@ -50,63 +50,26 @@ const navBarLinks: LinkProps[] = [
 ];
 
 import { useModal, useModalWithError, useFormModal } from "../hooks/useModal";
+import { toast } from "../utils/toast";
 
 export default function Header() {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user.user);
 
-  // Toast уведомления
-  const [toastOpen, setToastOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastSeverity, setToastSeverity] = useState<"success" | "error">(
-    "success"
-  );
+  // Логика входа
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const showToast = (
-    message: string,
-    severity: "success" | "error" = "success"
-  ) => {
-    setToastMessage(message);
-    setToastSeverity(severity);
-    setToastOpen(true);
+  useEffect(() => {
+    console.log(location);
+  }, [location]);
+
+  const handleLogin = () => {
+    localStorage.setItem("path", location.pathname);
+    navigate("/login");
   };
 
-  const handleToastClose = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === "clickaway") return;
-    setToastOpen(false);
-  };
-
-  // Модалка входа
-  const loginModal = useModalWithError();
-
-  const loginFields: FormField[] = [
-    { name: "email", label: "Почта", type: "text", required: true },
-    { name: "password", label: "Пароль", type: "password", required: true },
-  ];
-
-  const handleLogin = async (data: Record<string, any>) => {
-    const loginRequest = {
-      email: data.email,
-      password: data.password,
-    };
-    try {
-      const userData = await authAPI.login(loginRequest);
-      loginModal.closeModalWithReset();
-      dispatch(setUser(userData));
-      showToast("Вы успешно вошли в аккаунт");
-    } catch (error: any) {
-      if (error.response?.status === 401) {
-        loginModal.setError("Неверная почта или пароль");
-      } else {
-        loginModal.setError("Произошла ошибка при входе");
-      }
-    }
-  };
-
-  // Модалка регистрации
+  // Логика регистрации
   const registerModal = useModalWithError();
 
   const registerFields: FormField[] = [
@@ -125,7 +88,7 @@ export default function Header() {
       const userData = await authAPI.register(registerRequest);
       dispatch(setUser(userData));
       registerModal.closeModalWithReset();
-      showToast("Регистрация прошла успешно!");
+      toast.success("Регистрация прошла успешно!");
     } catch (error: any) {
       if (error.response?.status == 409) {
         registerModal.setError("Пользователь с таким email уже существует");
@@ -155,7 +118,7 @@ export default function Header() {
     );
     dispatch(setUser(response.data));
     balanceModal.closeModal();
-    showToast("Баланс успешно пополнен");
+    toast.success("Баланс успешно пополнен");
   };
 
   // Модалка изменения логина
@@ -170,7 +133,7 @@ export default function Header() {
     const response = await userAPI.updateLogin(user.id, data.login);
     dispatch(setUser(response.data));
     userLoginModal.closeModal();
-    showToast("Логин успешно изменен");
+    toast.success("Логин успешно изменен");
   };
 
   // Модалка изменения почты
@@ -186,7 +149,7 @@ export default function Header() {
       const response = await userAPI.updateEmail(user.id, data.email);
       dispatch(setUser(response.data));
       mailModal.closeModalWithReset();
-      showToast("Email успешно изменен");
+      toast.success("Email успешно изменен");
     } catch (error: any) {
       if (error.response.status == 409) {
         mailModal.setError("Пользователь с таким email уже существует");
@@ -234,7 +197,7 @@ export default function Header() {
       );
       dispatch(setUser(response.data));
       passwordModal.closeModalWithReset();
-      showToast("Пароль успешно изменен");
+      toast.success("Пароль успешно изменен");
     } catch (error) {
       console.error("Ошибка при изменении пароля:", error);
       passwordModal.setError(
@@ -264,7 +227,7 @@ export default function Header() {
   const copyUserId = (event: React.MouseEvent<HTMLElement>) => {
     navigator.clipboard.writeText(user?.id ?? "");
     setCopyUserIdInfoAnchorEl(event.currentTarget);
-    showToast("ID пользователя скопирован в буфер обмена");
+    toast.success("ID пользователя скопирован в буфер обмена");
     setTimeout(() => {
       setCopyUserIdInfoAnchorEl(null);
     }, 1500);
@@ -272,7 +235,7 @@ export default function Header() {
 
   const logout = () => {
     dispatch(setUser(null));
-    showToast("Вы успешно вышли из аккаунта");
+    toast.success("Вы успешно вышли из аккаунта");
   };
 
   const buttonConfigs: { userInfo: ButtonProps } = {
@@ -328,41 +291,10 @@ export default function Header() {
 
           <WithRole allowedRoles="NONE">
             <RowStack>
-              <Button color="secondary" onClick={loginModal.openModal}>
+              <Button color="secondary" onClick={handleLogin}>
                 Вход
               </Button>
-              <Modal
-                open={loginModal.isOpen}
-                onClose={loginModal.closeModalWithReset}
-              >
-                <FormComponent
-                  absolute
-                  title="Вход"
-                  fields={loginFields}
-                  onSubmit={handleLogin}
-                  onCancel={loginModal.closeModalWithReset}
-                  submitText="Войти"
-                  cancelText="Отмена"
-                  errorMessage={loginModal.error}
-                />
-              </Modal>
-
               <Button onClick={registerModal.openModal}>Регистрация</Button>
-              <Modal
-                open={registerModal.isOpen}
-                onClose={registerModal.closeModalWithReset}
-              >
-                <FormComponent
-                  absolute
-                  title="Регистрация"
-                  fields={registerFields}
-                  onSubmit={handleRegister}
-                  onCancel={registerModal.closeModalWithReset}
-                  submitText="Зарегестрироваться"
-                  cancelText="Отмена"
-                  errorMessage={registerModal.error}
-                />
-              </Modal>
             </RowStack>
           </WithRole>
 
@@ -541,23 +473,6 @@ export default function Header() {
           </WithRole>
         </Box>
       </AppBar>
-
-      {/* Toast уведомления */}
-      <Snackbar
-        open={toastOpen}
-        autoHideDuration={4000}
-        onClose={handleToastClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          onClose={handleToastClose}
-          severity={toastSeverity}
-          sx={{ width: "100%" }}
-          elevation={5}
-        >
-          {toastMessage}
-        </Alert>
-      </Snackbar>
     </>
   );
 }
