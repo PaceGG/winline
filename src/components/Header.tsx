@@ -49,7 +49,7 @@ const navBarLinks: LinkProps[] = [
   },
 ];
 
-import { useModal, useModalWithError, useFormModal } from "../hooks/useModal";
+import { useModal, useModalWithError } from "../hooks/useModal";
 import { toast } from "../utils/toast";
 
 export default function Header() {
@@ -70,14 +70,6 @@ export default function Header() {
   };
 
   // Логика регистрации
-  const registerModal = useModalWithError();
-
-  const registerFields: FormField[] = [
-    { name: "login", label: "Имя", type: "text", required: true },
-    { name: "email", label: "Почта", type: "text", required: true },
-    { name: "password", label: "Пароль", type: "password", required: true },
-  ];
-
   const handleRegister = () => {
     localStorage.setItem("lastpath", location.pathname);
     navigate("/register");

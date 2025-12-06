@@ -2,9 +2,10 @@ import { useState, useEffect, useMemo } from "react";
 import { matchesAPI } from "../api/endpoints/matches";
 import type { Match, MatchStatus } from "../api/types/match";
 import { SportTypesList } from "./SportTypesList";
-import { Box } from "@mui/material";
+import { Box, Skeleton } from "@mui/material";
 import SportTypesFilter from "./SportTypesFilter";
 import { useAppSelector } from "../hooks/redux";
+import MatchListSkeleton from "./MatchListSkeleton";
 
 interface MatchListProps {
   matchStatus: MatchStatus;
@@ -63,7 +64,7 @@ const MatchList = ({ matchStatus }: MatchListProps) => {
     );
   }, [allSportTypes, sportFiltersSet]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <MatchListSkeleton />;
 
   const hasMatches = filteredMatches.length > 0;
 
