@@ -15,12 +15,13 @@ import {
   alpha,
 } from "@mui/material";
 import {
+  Person as PersonIcon,
   Email as EmailIcon,
   Lock as LockIcon,
   Visibility,
   VisibilityOff,
-  Login as LoginIcon,
   PersonAdd as PersonAddIcon,
+  ArrowBack as ArrowBackIcon,
 } from "@mui/icons-material";
 import { keyframes } from "@emotion/react";
 import Logo from "./Logo";
@@ -29,9 +30,11 @@ import { authAPI } from "../api/endpoints/auth";
 import { toast } from "../utils/toast";
 
 // Типизация для props компонента
-interface LoginFormData {
+interface RegisterFormData {
+  username: string;
   email: string;
   password: string;
+  confirmPassword: string;
 }
 
 // Анимация пульсации фона
@@ -63,17 +66,21 @@ const gradientAnimation = keyframes`
   }
 `;
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const [formData, setFormData] = useState<LoginFormData>({
+  const [formData, setFormData] = useState<RegisterFormData>({
+    username: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -82,54 +89,103 @@ export default function LoginPage() {
       [name]: value,
     }));
     setError(null);
+    setSuccess(null);
   };
 
   const navigate = useNavigate();
 
+  const validateForm = (): boolean => {
+    // Валидация обязательных полей
+    if (
+      !formData.username ||
+      !formData.email ||
+      !formData.password ||
+      !formData.confirmPassword
+    ) {
+      setError("Пожалуйста, заполните все поля");
+      return false;
+    }
+
+    // Валидация имени пользователя
+    if (formData.username.length < 3) {
+      setError("Имя пользователя должно содержать минимум 3 символа");
+      return false;
+    }
+
+    if (!/^[a-zA-Z0-9_]+$/.test(formData.username)) {
+      setError(
+        "Имя пользователя может содержать только буквы, цифры и символ подчеркивания"
+      );
+      return false;
+    }
+
+    // Валидация email
+    // if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    //   setError("Введите корректный email адрес");
+    //   return false;
+    // }
+
+    // Валидация пароля
+    if (formData.password.length < 6) {
+      setError("Пароль должен содержать минимум 6 символов");
+      return false;
+    }
+
+    // Проверка совпадения паролей
+    if (formData.password !== formData.confirmPassword) {
+      setError("Пароли не совпадают");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setSuccess(null);
+
+    // Валидация формы
+    if (!validateForm()) {
+      return;
+    }
+
     setIsLoading(true);
 
     // Имитация задержки API
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    // Валидация
-    if (!formData.email || !formData.password) {
-      setError("Пожалуйста, заполните все поля");
-      setIsLoading(false);
-      return;
-    }
-
-    // if (!/\S+@\S+\.\S+/.test(formData.email)) {
-    //   setError("Введите корректный email адрес");
-    //   setIsLoading(false);
-    //   return;
-    // }
-
-    const loginRequest = {
+    const registerRequest = {
+      login: formData.username,
       email: formData.email,
       password: formData.password,
     };
-    try {
-      await authAPI.login(loginRequest);
-      const lastpath = localStorage.getItem("lastpath");
-      navigate(lastpath ?? "/");
-      toast.success("Вы успешно вошли в аккаунт");
-    } catch (error: any) {
-      if (error.response?.status === 401) {
-        setError("Неверная почта или пароль");
-      } else {
-        setError("Произошла ошибка при входе");
-      }
-    }
 
-    console.log("Login attempt:", formData);
-    setIsLoading(false);
+    try {
+      await authAPI.register(registerRequest);
+      toast.success("Регистрация успешно завершена");
+
+      setTimeout(() => {
+        const lastpath = localStorage.getItem("lastpath");
+        navigate(lastpath ?? "/");
+      }, 2000);
+    } catch (error: any) {
+      if (error.response?.status === 409) {
+        setError("Пользователь с таким email или именем уже существует");
+      } else if (error.response?.status === 400) {
+        setError("Некорректные данные для регистрации");
+      } else {
+        setError(
+          "Произошла ошибка при регистрации. Пожалуйста, попробуйте позже"
+        );
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleSignUp = () => {
-    console.log("Redirect to sign up");
+  const handleBackToLogin = () => {
+    navigate("/login");
   };
 
   return (
@@ -256,11 +312,18 @@ export default function LoginPage() {
                 <Logo />
               </Link>
               <Typography
+                variant="h6"
+                fontWeight={600}
+                sx={{ mt: 1, color: "primary.main" }}
+              >
+                Создание аккаунта
+              </Typography>
+              <Typography
                 variant="body2"
                 color="text.secondary"
                 sx={{ opacity: 0.8 }}
               >
-                Войдите в свою учетную запись чтобы продолжить
+                Заполните форму ниже для регистрации
               </Typography>
             </Box>
 
@@ -278,14 +341,46 @@ export default function LoginPage() {
                 </Fade>
               )}
 
+              {success && (
+                <Fade in>
+                  <Alert severity="success" sx={{ mb: 3, borderRadius: 2 }}>
+                    {success}
+                  </Alert>
+                </Fade>
+              )}
+
+              {/* Поле для логина */}
+              <TextField
+                fullWidth
+                label="Имя пользователя"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                sx={{ mb: 2 }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PersonIcon
+                        sx={{ color: "primary.main", opacity: 0.8 }}
+                      />
+                    </InputAdornment>
+                  ),
+                }}
+                variant="outlined"
+                size="medium"
+                disabled={isLoading}
+                helperText="От 3 до 20 символов (только буквы, цифры и _)"
+              />
+
+              {/* Поле для email */}
               <TextField
                 fullWidth
                 label="Email"
                 name="email"
-                // type="email"
+                type="text"
                 value={formData.email}
                 onChange={handleChange}
-                sx={{ mb: 2.5 }}
+                sx={{ mb: 2 }}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -298,6 +393,7 @@ export default function LoginPage() {
                 disabled={isLoading}
               />
 
+              {/* Поле для пароля */}
               <TextField
                 fullWidth
                 label="Пароль"
@@ -305,7 +401,7 @@ export default function LoginPage() {
                 type={showPassword ? "text" : "password"}
                 value={formData.password}
                 onChange={handleChange}
-                sx={{ mb: 3 }}
+                sx={{ mb: 2 }}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -327,6 +423,45 @@ export default function LoginPage() {
                 variant="outlined"
                 size="medium"
                 disabled={isLoading}
+                helperText="Минимум 6 символов"
+              />
+
+              {/* Поле для подтверждения пароля */}
+              <TextField
+                fullWidth
+                label="Подтверждение пароля"
+                name="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                sx={{ mb: 3 }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockIcon sx={{ color: "primary.main", opacity: 0.8 }} />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                        edge="end"
+                        sx={{ color: "text.secondary" }}
+                      >
+                        {showConfirmPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                variant="outlined"
+                size="medium"
+                disabled={isLoading}
               />
 
               <Button
@@ -336,19 +471,19 @@ export default function LoginPage() {
                 size="large"
                 disabled={isLoading}
                 startIcon={
-                  isLoading ? <CircularProgress size={20} /> : <LoginIcon />
+                  isLoading ? <CircularProgress size={20} /> : <PersonAddIcon />
                 }
                 sx={{
                   py: 1.5,
                   borderRadius: 2,
                   fontWeight: 600,
                   fontSize: "1rem",
-                  background: `linear-gradient(135deg, ${theme.palette.primary.main} 30%, ${theme.palette.secondary.main} 90%)`,
+                  background: `linear-gradient(135deg, ${theme.palette.success.main} 30%, ${theme.palette.primary.main} 90%)`,
                   transition: "all 0.3s ease",
                   "&:hover": {
                     transform: "translateY(-2px)",
                     boxShadow: `0 10px 20px ${alpha(
-                      theme.palette.primary.main,
+                      theme.palette.success.main,
                       0.3
                     )}`,
                   },
@@ -357,24 +492,24 @@ export default function LoginPage() {
                   },
                 }}
               >
-                {isLoading ? "Вход..." : "Войти"}
+                {isLoading ? "Регистрация..." : "Зарегистрироваться"}
               </Button>
             </Box>
 
-            {/* Регистрация */}
+            {/* Кнопка возврата к входу */}
             <Box sx={{ textAlign: "center", mt: 3 }}>
               <Typography
                 variant="body2"
                 color="text.secondary"
                 sx={{ mb: 1, opacity: 0.8 }}
               >
-                Нет учетной записи?
+                Уже есть учетная запись?
               </Typography>
               <Button
                 variant="text"
-                onClick={handleSignUp}
+                onClick={handleBackToLogin}
                 disabled={isLoading}
-                startIcon={<PersonAddIcon />}
+                startIcon={<ArrowBackIcon />}
                 sx={{
                   fontWeight: 600,
                   color: "primary.main",
@@ -383,7 +518,7 @@ export default function LoginPage() {
                   },
                 }}
               >
-                Зарегистрироваться
+                Вернуться к входу
               </Button>
             </Box>
 
@@ -399,7 +534,7 @@ export default function LoginPage() {
                 fontSize: "0.75rem",
               }}
             >
-              © 2025 Все права защищены. Точно супер мега ласт додеп.
+              © 2025 Все права защищены. Регистрация - первый шаг к богатству!
             </Typography>
           </Box>
         </Paper>

@@ -47,6 +47,9 @@ export const authAPI = {
 
     const response = await httpClient.post("users", userData);
     const { password, ...userWithoutPassword } = response.data;
+
+    store.dispatch(setUser(userWithoutPassword));
+
     return userWithoutPassword;
   },
 

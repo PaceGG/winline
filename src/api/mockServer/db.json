@@ -353,6 +353,26 @@
       "role": "USER",
       "status": "ACTIVE",
       "createdAt": "2025-11-26T20:55:43.531Z"
+    },
+    {
+      "id": "4de5",
+      "login": "pacenew",
+      "email": "reg1111111111111111@gmail.com",
+      "password": "123123",
+      "balance": 0,
+      "role": "USER",
+      "status": "ACTIVE",
+      "createdAt": "2025-12-06T00:44:30.267Z"
+    },
+    {
+      "id": "1b54",
+      "login": "noname",
+      "email": "noname",
+      "password": "noname",
+      "balance": 0,
+      "role": "USER",
+      "status": "ACTIVE",
+      "createdAt": "2025-12-06T00:49:22.922Z"
     }
   ],
   "bets": [],

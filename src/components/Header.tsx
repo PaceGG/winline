@@ -65,8 +65,8 @@ export default function Header() {
   }, [location]);
 
   const handleLogin = () => {
-    localStorage.setItem("path", location.pathname);
-    navigate("/login");
+    localStorage.setItem("lastpath", location.pathname);
+    navigate("/register");
   };
 
   // Логика регистрации
@@ -78,24 +78,9 @@ export default function Header() {
     { name: "password", label: "Пароль", type: "password", required: true },
   ];
 
-  const handleRegister = async (data: Record<string, any>) => {
-    const registerRequest = {
-      login: data.login,
-      email: data.email,
-      password: data.password,
-    };
-    try {
-      const userData = await authAPI.register(registerRequest);
-      dispatch(setUser(userData));
-      registerModal.closeModalWithReset();
-      toast.success("Регистрация прошла успешно!");
-    } catch (error: any) {
-      if (error.response?.status == 409) {
-        registerModal.setError("Пользователь с таким email уже существует");
-      } else {
-        registerModal.setError("Произошла ошибка при регистрации");
-      }
-    }
+  const handleRegister = () => {
+    localStorage.setItem("lastpath", location.pathname);
+    navigate("/login");
   };
 
   // Модалка пополнения баланса
@@ -294,7 +279,7 @@ export default function Header() {
               <Button color="secondary" onClick={handleLogin}>
                 Вход
               </Button>
-              <Button onClick={registerModal.openModal}>Регистрация</Button>
+              <Button onClick={handleRegister}>Регистрация</Button>
             </RowStack>
           </WithRole>
 

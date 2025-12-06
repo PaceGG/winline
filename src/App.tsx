@@ -13,6 +13,7 @@ import { useAppSelector } from "./hooks/redux";
 import LoginPage from "./components/LoginPage";
 import { useEffect } from "react";
 import ToastContainer from "./components/ToastContainer";
+import RegisterPage from "./components/RegisterPage";
 
 function MainLayout() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Navigate to="/matches" replace />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
             <Route element={<MainLayout />}>
               <Route
                 path="/matches"
