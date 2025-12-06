@@ -17,6 +17,7 @@ import FormComponent from "./FormComponent";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
 import { userAPI } from "../api/endpoints/user";
 import { setUser } from "../store/userSlice";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface CoefBoxProps {
   coef?: number;
@@ -288,6 +289,9 @@ export default function CoefsList({
   const [selectedMatchType, setSelectedMatchType] = useState<string>();
   const [currentCoef, setCurrentCoef] = useState<number>();
 
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const makeBetModal = useModalWithError();
 
   const makeBetFields: FormField[] = [
@@ -301,6 +305,12 @@ export default function CoefsList({
   ];
 
   const handleCoefBoxClick = (matchType: string, coef: number) => {
+    if (!userData) {
+      localStorage.setItem("lastpath", location.pathname);
+      navigate("/login");
+      return;
+    }
+
     makeBetModal.openModal();
     setSelectedMatchType(matchType);
     setCurrentCoef(coef);

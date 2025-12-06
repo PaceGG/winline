@@ -66,7 +66,7 @@ export default function Header() {
 
   const handleLogin = () => {
     localStorage.setItem("lastpath", location.pathname);
-    navigate("/register");
+    navigate("/login");
   };
 
   // Логика регистрации
@@ -80,7 +80,7 @@ export default function Header() {
 
   const handleRegister = () => {
     localStorage.setItem("lastpath", location.pathname);
-    navigate("/login");
+    navigate("/register");
   };
 
   // Модалка пополнения баланса
