@@ -42,6 +42,91 @@ export default function CreateMatch({ sportTypes }: CreateMatchProps) {
       required: true,
       strictMatch: true,
     },
+    {
+      name: "odds",
+      label: "Коэффициенты",
+      type: "object",
+      required: true,
+      fields: [
+        {
+          name: "winA",
+          label: "Победа команды A",
+          type: "number",
+          required: true,
+          validation: { min: 1.0 },
+        },
+        {
+          name: "draw",
+          label: "Ничья",
+          type: "number",
+          required: true,
+          validation: { min: 1.0 },
+        },
+        {
+          name: "winB",
+          label: "Победа команды B",
+          type: "number",
+          required: true,
+          validation: { min: 1.0 },
+        },
+        {
+          name: "handicap",
+          label: "Форы",
+          type: "array",
+          arrayItemLabel: "Фора",
+          fields: [
+            {
+              name: "value",
+              label: "Значение",
+              type: "number",
+              required: true,
+            },
+            {
+              name: "oddsA",
+              label: "Коэф. команды A",
+              type: "number",
+              required: true,
+              validation: { min: 1.0 },
+            },
+            {
+              name: "oddsB",
+              label: "Коэф. команды B",
+              type: "number",
+              required: true,
+              validation: { min: 1.0 },
+            },
+          ],
+        },
+        {
+          name: "total",
+          label: "Тоталы",
+          type: "array",
+          arrayItemLabel: "Тотал",
+          fields: [
+            {
+              name: "value",
+              label: "Значение",
+              type: "number",
+              required: true,
+            },
+            {
+              name: "over",
+              label: "Коэф. больше",
+              type: "number",
+              required: true,
+              validation: { min: 1.0 },
+            },
+            {
+              name: "under",
+              label: "Коэф. меньше",
+              type: "number",
+              required: true,
+              validation: { min: 1.0 },
+            },
+          ],
+        },
+      ],
+    },
   ];
 
   const handleSubmit = (data: Record<string, any>) => {
