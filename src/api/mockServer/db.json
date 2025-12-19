@@ -47,7 +47,7 @@
       "sportType": "Basketball",
       "league": "NBA",
       "startTime": "2024-10-22T02:30:00Z",
-      "status": "live",
+      "status": "LIVE",
       "scoreA": 78,
       "scoreB": 82,
       "odds": {
@@ -63,7 +63,7 @@
       "sportType": "Baseball",
       "league": "MLB",
       "startTime": "2024-10-19T23:05:00Z",
-      "status": "finished",
+      "status": "FINISHED",
       "scoreA": 5,
       "scoreB": 3,
       "odds": {
@@ -77,7 +77,7 @@
     {
       "id": "match_004",
       "teamA": "Manchester United",
-      "teamB": "Liverpool",
+      "teamB": "LIVErpool",
       "sportType": "Soccer",
       "league": "Premier League",
       "startTime": "2024-10-25T16:30:00Z",
@@ -113,7 +113,7 @@
       "sportType": "Soccer",
       "league": "Ligue 1",
       "startTime": "2024-10-21T19:00:00Z",
-      "status": "cancelled",
+      "status": "CANCELLED",
       "scoreA": null,
       "scoreB": null,
       "odds": {}
@@ -233,7 +233,7 @@
       "sportType": "Soccer",
       "league": "Serie A",
       "startTime": "2024-10-29T19:45:00Z",
-      "status": "finished",
+      "status": "FINISHED",
       "scoreA": 2,
       "scoreB": 2,
       "odds": {

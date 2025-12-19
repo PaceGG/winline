@@ -33,19 +33,16 @@ const navBarLinks: LinkProps[] = [
     href: "matches",
   },
   {
-    label: "О нас",
-  },
-  {
     label: "Live сейчас",
+    href: "live",
   },
   {
-    label: "Экспресс ставки",
+    label: "Прошедшие матчи",
+    href: "finished",
   },
   {
-    label: "Спорт",
-  },
-  {
-    label: "Киберспорт",
+    label: "Отмененные",
+    href: "cancelled",
   },
 ];
 

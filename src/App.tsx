@@ -40,6 +40,15 @@ function App() {
                 path="/matches"
                 element={<MatchList matchStatus="UPCOMING" />}
               />
+              <Route path="/live" element={<MatchList matchStatus="LIVE" />} />
+              <Route
+                path="/finished"
+                element={<MatchList matchStatus="FINISHED" />}
+              />
+              <Route
+                path="/cancelled"
+                element={<MatchList matchStatus="CANCELLED" />}
+              />
             </Route>
           </Routes>
         </BrowserRouter>
