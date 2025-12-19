@@ -2,10 +2,12 @@ import { useState, useEffect, useMemo } from "react";
 import { matchesAPI } from "../api/endpoints/matches";
 import type { Match, MatchStatus } from "../api/types/match";
 import { SportTypesList } from "./SportTypesList";
-import { Box, Skeleton } from "@mui/material";
+import { Box, Button, IconButton, Skeleton } from "@mui/material";
 import SportTypesFilter from "./SportTypesFilter";
 import { useAppSelector } from "../hooks/redux";
 import MatchListSkeleton from "./MatchListSkeleton";
+import { WithRole } from "./WithRole";
+import { Add, HdrPlus } from "@mui/icons-material";
 
 interface MatchListProps {
   matchStatus: MatchStatus;
@@ -79,6 +81,12 @@ const MatchList = ({ matchStatus }: MatchListProps) => {
         p: 2,
       }}
     >
+      <WithRole allowedRoles="ADMIN">
+        <Button fullWidth sx={{ maxWidth: 1000 }} startIcon={<Add />}>
+          Создать ставку
+        </Button>
+      </WithRole>
+
       <SportTypesFilter
         allSports={allSportTypes}
         sportTypeNameMap={sportTypeNameMap}

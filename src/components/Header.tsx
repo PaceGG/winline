@@ -275,7 +275,7 @@ export default function Header() {
             </RowStack>
           </WithRole>
 
-          <WithRole allowedRoles="USER">
+          <WithRole allowedRoles={["USER", "ADMIN"]}>
             <RowStack>
               <Box>
                 {user && (
@@ -314,7 +314,7 @@ export default function Header() {
               </Box>
 
               <Box>
-                <Button variant="text" onClick={handleUserInfoClick}>
+                <Button variant="outlined" onClick={handleUserInfoClick}>
                   {user?.login}
                 </Button>
                 {user && (

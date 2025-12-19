@@ -309,8 +309,8 @@
       "login": "Юрий",
       "email": "yura3012004@gmail.com",
       "password": "123",
-      "balance": 20716,
-      "role": "USER",
+      "balance": 15939,
+      "role": "ADMIN",
       "status": "ACTIVE",
       "createdAt": "2025-11-26T19:48:57.820Z"
     },
@@ -389,7 +389,7 @@
       "login": "777",
       "email": "777",
       "password": "777777",
-      "balance": 780000,
+      "balance": 234260686976,
       "role": "USER",
       "status": "ACTIVE",
       "createdAt": "2025-12-06T01:11:56.059Z"
