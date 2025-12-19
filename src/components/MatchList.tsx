@@ -8,6 +8,7 @@ import { useAppSelector } from "../hooks/redux";
 import MatchListSkeleton from "./MatchListSkeleton";
 import { WithRole } from "./WithRole";
 import { Add, HdrPlus } from "@mui/icons-material";
+import CreateMatch from "./CreateMatch";
 
 interface MatchListProps {
   matchStatus: MatchStatus;
@@ -82,9 +83,9 @@ const MatchList = ({ matchStatus }: MatchListProps) => {
       }}
     >
       <WithRole allowedRoles="ADMIN">
-        <Button fullWidth sx={{ maxWidth: 1000 }} startIcon={<Add />}>
-          Создать ставку
-        </Button>
+        <Box maxWidth={1000} width={"100%"}>
+          <CreateMatch sportTypes={allSportTypes} />
+        </Box>
       </WithRole>
 
       <SportTypesFilter

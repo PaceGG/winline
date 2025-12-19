@@ -12,15 +12,23 @@ import {
   MenuItem,
   Checkbox,
   FormControlLabel,
+  Autocomplete,
 } from "@mui/material";
 
 // Типы для полей формы
 export interface FormField {
   name: string;
   label: string;
-  type: "text" | "email" | "password" | "number" | "select" | "checkbox";
+  type:
+    | "text"
+    | "email"
+    | "password"
+    | "number"
+    | "select"
+    | "checkbox"
+    | "autocomplete";
   required?: boolean;
-  options?: { value: string; label: string }[]; // для select
+  options?: { value: string; label: string }[]; // для select и autocomplete
   defaultValue?: string | number | boolean;
   validation?: {
     pattern?: RegExp;
@@ -29,6 +37,7 @@ export interface FormField {
     min?: number;
     max?: number;
   };
+  strictMatch?: boolean; // для autocomplete - должно ли значение строго совпадать с одним из вариантов
 }
 
 // Пропсы компонента
@@ -88,6 +97,20 @@ const FormComponent: React.FC<FormProps> = ({
         if (value !== true) {
           return "Это поле обязательно для заполнения";
         }
+      } else if (field.type === "autocomplete") {
+        // Для autocomplete проверяем, что есть значение
+        if (!value && value !== 0) {
+          return "Это поле обязательно для заполнения";
+        }
+        // Если включен strictMatch, проверяем что значение есть в списке опций
+        if (field.strictMatch && field.options) {
+          const option = field.options.find(
+            (opt) => opt.value === value || opt.label === value
+          );
+          if (!option) {
+            return "Выберите значение из списка";
+          }
+        }
       } else if (!value && value !== 0) {
         return "Это поле обязательно для заполнения";
       }
@@ -122,6 +145,21 @@ const FormComponent: React.FC<FormProps> = ({
         if (max !== undefined && numValue > max) {
           return `Максимальное значение: ${max}`;
         }
+      }
+    }
+
+    // Дополнительная валидация для autocomplete с strictMatch
+    if (
+      field.type === "autocomplete" &&
+      field.strictMatch &&
+      field.options &&
+      value
+    ) {
+      const option = field.options.find(
+        (opt) => opt.value === value || opt.label === value
+      );
+      if (!option) {
+        return "Выберите значение из списка";
       }
     }
 
@@ -213,6 +251,48 @@ const FormComponent: React.FC<FormProps> = ({
               />
             }
             label={field.label}
+          />
+        );
+
+      case "autocomplete":
+        return (
+          <Autocomplete
+            id={field.name}
+            options={field.options || []}
+            getOptionLabel={(option) =>
+              typeof option === "string" ? option : option.label
+            }
+            isOptionEqualToValue={(option, value) =>
+              option.value === value || option.label === value
+            }
+            value={formData[field.name] || null}
+            onChange={(_, newValue) => {
+              // Сохраняем либо value, либо label в зависимости от strictMatch
+              if (newValue) {
+                const valueToSave =
+                  typeof newValue === "string" ? newValue : newValue.value;
+                handleChange(field.name, valueToSave);
+              } else {
+                handleChange(field.name, "");
+              }
+            }}
+            onInputChange={(_, newInputValue) => {
+              // Если strictMatch не включен, разрешаем свободный ввод
+              if (!field.strictMatch) {
+                handleChange(field.name, newInputValue);
+              }
+            }}
+            freeSolo={!field.strictMatch}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                {...commonProps}
+                error={!!errors[field.name]}
+                helperText={errors[field.name]}
+              />
+            )}
+            disabled={loading}
+            fullWidth
           />
         );
 
