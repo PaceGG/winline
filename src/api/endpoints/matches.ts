@@ -2,6 +2,20 @@ import { httpClient } from "../httpClient";
 import type { Match } from "../types/match";
 
 export const matchesAPI = {
+  createMatch: async (match: Partial<Match>): Promise<Match> => {
+    const newMatch = {
+      ...match,
+      startTime: new Date().toISOString(),
+      status: "UPCOMING",
+      scoreA: null,
+      scoreB: null,
+    };
+
+    const response = await httpClient.post(`/matches`, newMatch);
+
+    return response.data;
+  },
+
   getMatches: (filters?: any): Promise<{ data: Match[] }> => {
     const params = new URLSearchParams();
     if (filters) {

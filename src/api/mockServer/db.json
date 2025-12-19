@@ -253,6 +253,76 @@
           }
         ]
       }
+    },
+    {
+      "id": "1abf",
+      "league": "Лига",
+      "teamA": "Команда А",
+      "teamB": "Команда Бэ",
+      "sportType": "Soccer",
+      "odds": {
+        "winA": 1,
+        "draw": 2,
+        "winB": 3,
+        "handicap": [
+          {
+            "value": 4,
+            "oddsA": 5,
+            "oddsB": 6
+          },
+          {
+            "value": 7,
+            "oddsA": 8,
+            "oddsB": 9.099
+          }
+        ],
+        "total": [
+          {
+            "value": 12,
+            "over": 34,
+            "under": 56
+          }
+        ]
+      },
+      "startTime": "2025-12-19T13:15:51.628Z",
+      "status": "UPCOMING",
+      "scoreA": null,
+      "scoreB": null
+    },
+    {
+      "id": "41fa",
+      "league": "Лига",
+      "teamA": "Команда А",
+      "teamB": "Команда Бэ",
+      "sportType": "Soccer",
+      "odds": {
+        "winA": 1,
+        "draw": 2,
+        "winB": 3,
+        "handicap": [
+          {
+            "value": 4,
+            "oddsA": 5,
+            "oddsB": 6
+          },
+          {
+            "value": 7,
+            "oddsA": 8,
+            "oddsB": 9.099
+          }
+        ],
+        "total": [
+          {
+            "value": 12,
+            "over": 34,
+            "under": 56
+          }
+        ]
+      },
+      "startTime": "2025-12-19T13:16:05.686Z",
+      "status": "UPCOMING",
+      "scoreA": null,
+      "scoreB": null
     }
   ],
   "users": [

@@ -4,6 +4,8 @@ import { useModal } from "../hooks/useModal";
 import type { FormField } from "./FormComponent";
 import FormComponent from "./FormComponent";
 import { useMemo } from "react";
+import { matchesAPI } from "../api/endpoints/matches";
+import type { Match, Odds } from "../api/types/match";
 
 interface CreateMatchProps {
   sportTypes: string[];
@@ -14,7 +16,7 @@ export default function CreateMatch({ sportTypes }: CreateMatchProps) {
 
   const fields: FormField[] = [
     {
-      name: "liga",
+      name: "league",
       label: "Лига",
       type: "text",
       required: true,
@@ -129,8 +131,33 @@ export default function CreateMatch({ sportTypes }: CreateMatchProps) {
     },
   ];
 
-  const handleSubmit = (data: Record<string, any>) => {
-    console.log("Матч создан: ", data);
+  const processOdds = (odds: Odds) => ({
+    winA: +odds.winA,
+    draw: +odds.draw,
+    winB: +odds.winB,
+    handicap: odds.handicap?.map((h) => ({
+      value: +h.value,
+      oddsA: +h.oddsA,
+      oddsB: +h.oddsB,
+    })),
+    total: odds.total?.map((t) => ({
+      value: +t.value,
+      over: +t.over,
+      under: +t.under,
+    })),
+  });
+
+  const handleSubmit = async (data: Record<string, any>) => {
+    const createMatchRequest: Partial<Match> = {
+      league: data.league,
+      teamA: data.teamA,
+      teamB: data.teamB,
+      sportType: data.sportType,
+      odds: processOdds(data.odds),
+    };
+
+    const response = await matchesAPI.createMatch(createMatchRequest);
+
     modal.closeModal();
   };
 
