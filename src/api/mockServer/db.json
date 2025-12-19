@@ -49,7 +49,7 @@
       "startTime": "2024-10-22T02:30:00Z",
       "status": "LIVE",
       "scoreA": 78,
-      "scoreB": 82,
+      "scoreB": 82222,
       "odds": {
         "winA": 2.75,
         "draw": null,
@@ -81,9 +81,9 @@
       "sportType": "Soccer",
       "league": "Premier League",
       "startTime": "2024-10-25T16:30:00Z",
-      "status": "UPCOMING",
-      "scoreA": null,
-      "scoreB": null,
+      "status": "LIVE",
+      "scoreA": 3,
+      "scoreB": 2,
       "odds": {
         "winA": 3.1,
         "draw": 3.4,

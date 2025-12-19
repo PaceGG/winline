@@ -34,6 +34,7 @@ export default function MatchesBetsList({ matches }: MatchesBetsListProps) {
           <Stack sx={{ p: 1 }}>
             <CoefsList
               teams={[match.teamA, match.teamB]}
+              score={[match.scoreA, match.scoreB]}
               odds={match.odds}
               match={match}
             />

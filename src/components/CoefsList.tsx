@@ -6,6 +6,8 @@ import {
   Menu,
   MenuItem,
   Modal,
+  Stack,
+  Grid,
 } from "@mui/material";
 import RowStack from "./RowStack";
 import type { Handicap, Match, Odds, Total } from "../api/types/match";
@@ -245,6 +247,7 @@ function CoefValueSelector({
 
 interface CoefsListProps {
   teams: string[];
+  score: (number | null)[];
   odds: Odds;
   isTeamA?: boolean;
   match: Match;
@@ -252,6 +255,7 @@ interface CoefsListProps {
 
 export default function CoefsList({
   teams,
+  score,
   odds,
   isTeamA = true,
   match,
@@ -347,7 +351,7 @@ export default function CoefsList({
       }}
     >
       <RowStack justifyContent="space-between" alignItems="center">
-        <T
+        {/* <T
           variant="body1"
           sx={{
             fontWeight: 500,
@@ -355,10 +359,60 @@ export default function CoefsList({
             fontSize: "0.95rem",
           }}
         >
-          {teams[0]}
+          {teams[0]} {score[0]}
           <br />
-          {teams[1]}
-        </T>
+          {teams[1]} {score[1]}
+        </T> */}
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "1fr auto",
+            gap: 1,
+            alignItems: "center",
+          }}
+        >
+          <T
+            variant="body1"
+            sx={{
+              fontWeight: 500,
+              fontSize: "0.95rem",
+            }}
+          >
+            {teams[0]}
+          </T>
+          <T
+            variant="body1"
+            sx={{
+              fontWeight: 500,
+              fontSize: "0.95rem",
+              textAlign: "right",
+              color: "primary.main",
+            }}
+          >
+            {score[0]}
+          </T>
+
+          <T
+            variant="body1"
+            sx={{
+              fontWeight: 500,
+              fontSize: "0.95rem",
+            }}
+          >
+            {teams[1]}
+          </T>
+          <T
+            variant="body1"
+            sx={{
+              fontWeight: 500,
+              fontSize: "0.95rem",
+              textAlign: "right",
+              color: "primary.main",
+            }}
+          >
+            {score[1]}
+          </T>
+        </Box>
 
         <RowStack gap={2} alignItems="center" sx={{ flexWrap: "nowrap" }}>
           {/* Основные исходы (1X2) */}
